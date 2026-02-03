@@ -4,20 +4,18 @@ import "./EnrollmentCounter.css";
 export default function EnrollmentCounter() {
   const [students, setStudents] = useState(0);
   const [modules, setModules] = useState(0);
-  const studentsPerModule = 10; // Adjust this number based on the module size
+  const studentsPerModule = 20;
 
   function handleClick() {
     setStudents((current) => current + 1);
   }
 
-  // Currently, clicking the button triggers the onClick event, which increments the student count by 1.
-  // However, the 'Modules Completed' data is not updating accordingly.
-  // Please insert your useEffect function below to appropriately update the modules using the setModules method.
+  useEffect(() => {
+    setModules(Math.floor(students / studentsPerModule));
+  }, [students, studentsPerModule]);
 
   return (
     <div className="EnrollmentCounter">
-      {" "}
-      {/* Added class for styling */}
       <p>
         Enrolled Students: <span>{students}</span>
       </p>

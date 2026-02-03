@@ -1,0 +1,20 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.card {
+  padding: 2em;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: start; /* Aligns items to the start of the container */
+  padding: 20px;
+}
+
+/* If you want to add a gap between the two components */
+.app-container > *:not(:last-child) {
+  margin-right: 20px;
+}
