@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CharacterSelector.css";
 
 function CharacterCard({ character, onSelect, isSelected }) {
@@ -17,13 +17,16 @@ function CharacterCard({ character, onSelect, isSelected }) {
   );
 }
 
-export default function CharacterSelector({ characters, onCharacterSelect }) {
+export default function CharacterSelector({ characters, onCharacterSelect, resetSignal }) {
   const [selectedName, setSelectedName] = useState("");
+
+  useEffect(() => {
+    setSelectedName("");
+  }, [resetSignal]);
 
   const handleSelect = (name) => {
     if (selectedName !== name) {
       setSelectedName(name);
-
       if (onCharacterSelect) onCharacterSelect();
     }
   };

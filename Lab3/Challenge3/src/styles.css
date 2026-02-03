@@ -7,6 +7,17 @@
   padding: 2em;
 }
 
+.counter{
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  z-index: 999;
+}
+
 .app-container {
   display: flex;
   justify-content: center;
