@@ -4,7 +4,24 @@ import Todo from "./components/Todo";
 import Form from "./components/Form";
 import FilterButton from "./components/FilterButton";
 
-const STORAGE_KEY = "todomatics.tasks";
+function usePersistedState(key, fallbackValue) {
+  const [state, setState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(key);
+      return saved !== null ? JSON.parse(saved) : fallbackValue;
+    } catch {
+      return fallbackValue;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(key, JSON.stringify(state));
+    } catch {}
+  }, [key, state]);
+
+  return [state, setState];
+}
 
 const FILTER_MAP = {
   All: () => true,
@@ -14,45 +31,41 @@ const FILTER_MAP = {
 
 const FILTER_NAMES = Object.keys(FILTER_MAP);
 
-function App(props) {
-  const [tasks, setTasks] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : props.tasks;
-    } catch {
-      return props.tasks;
-    }
-  });
-
+export default function App(props) {
+  const [tasks, setTasks] = usePersistedState("tasks", props.tasks ?? []);
   const [filter, setFilter] = useState("All");
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    } catch {
-    }
-  }, [tasks]);
-
   function addTask(name) {
-    const newTask = { id: `todo-${nanoid()}`, name, completed: false };
+    const trimmed = name.trim();
+    if (!trimmed) return;
+
+    const newTask = {
+      id: "todo-" + nanoid(),
+      name: trimmed,
+      completed: false,
+    };
+
     setTasks((prev) => [...prev, newTask]);
   }
 
   function toggleTaskCompleted(id) {
     setTasks((prev) =>
       prev.map((task) =>
-        id === task.id ? { ...task, completed: !task.completed } : task
-      )
+        task.id === id ? { ...task, completed: !task.completed } : task,
+      ),
     );
   }
 
   function deleteTask(id) {
-    setTasks((prev) => prev.filter((task) => id !== task.id));
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   }
 
   function editTask(id, newName) {
+    const trimmed = newName.trim();
+    if (!trimmed) return;
+
     setTasks((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, name: newName } : task))
+      prev.map((task) => (task.id === id ? { ...task, name: trimmed } : task)),
     );
   }
 
@@ -62,10 +75,10 @@ function App(props) {
 
   const taskList = filteredTasks.map((task) => (
     <Todo
+      key={task.id}
       id={task.id}
       name={task.name}
       completed={task.completed}
-      key={task.id}
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
       editTask={editTask}
@@ -105,5 +118,3 @@ function App(props) {
     </div>
   );
 }
-
-export default App;

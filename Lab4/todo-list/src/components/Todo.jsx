@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Todo(props) {
   const [isEditing, setEditing] = useState(false);
   const [newName, setNewName] = useState(props.name);
+
+  useEffect(() => {
+    setNewName(props.name);
+  }, [props.name]);
 
   function handleChange(e) {
     setNewName(e.target.value);
@@ -10,7 +14,9 @@ function Todo(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.editTask(props.id, newName.trim());
+    const trimmed = newName.trim();
+    if (!trimmed) return;
+    props.editTask(props.id, trimmed);
     setEditing(false);
   }
 
@@ -40,7 +46,8 @@ function Todo(props) {
           Cancel <span className="visually-hidden">renaming {props.name}</span>
         </button>
         <button type="submit" className="btn btn__primary todo-edit">
-          Save <span className="visually-hidden">new name for {props.name}</span>
+          Save{" "}
+          <span className="visually-hidden">new name for {props.name}</span>
         </button>
       </div>
     </form>
