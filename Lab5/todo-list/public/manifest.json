@@ -7,33 +7,33 @@
   "description": "A test application for the module of dynamic web tech",
   "icons": [
     {
-      "src": "/images/homescreen48.svg",
+      "src": "/images/homescreen48.png",
       "sizes": "48x48",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/homescreen72.svg",
+      "src": "/images/homescreen72.png",
       "sizes": "72x72",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/homescreen96.svg",
+      "src": "/images/homescreen96.png",
       "sizes": "96x96",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/homescreen144.svg",
+      "src": "/images/homescreen144.png",
       "sizes": "144x144",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/homescreen168.svg",
+      "src": "/images/homescreen168.png",
       "sizes": "168x168",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
