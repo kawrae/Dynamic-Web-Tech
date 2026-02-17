@@ -1,0 +1,409 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font: 62.5% / 1.15 sans-serif;
+}
+
+h1,
+h2 {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+button {
+  -moz-osx-font-smoothing: inherit;
+  -webkit-font-smoothing: inherit;
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  margin: 0;
+  overflow: visible;
+  padding: 0;
+  width: auto;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
+input[type="text"] {
+  border-radius: 0;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 68rem;
+  width: 100%;
+  color: #4d4d4d;
+  font: 1.6rem/1.25 "Arial", sans-serif;
+  background-color: #f6f7fb;
+}
+
+@media screen and (width >= 620px) {
+  body {
+    font-size: 1.9rem;
+    line-height: 1.31579;
+  }
+}
+
+:root {
+  --focus-ring: rgba(59, 130, 246, 0.55);
+  --focus-outline: #3b82f6;
+  --card-border: rgba(15, 23, 42, 0.08);
+}
+
+.form-group > input[type="text"] {
+  display: inline-block;
+  margin-top: 0.4rem;
+}
+
+.btn {
+  border: 0.2rem solid #4d4d4d;
+  cursor: pointer;
+  padding: 0.8rem 1rem 0.7rem;
+  text-transform: capitalize;
+
+  border-radius: 10px;
+  transition:
+    transform 80ms ease,
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.btn:hover {
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.toggle-btn {
+  border-color: lightgray;
+  border-width: 1px;
+
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+.btn.toggle-btn[aria-pressed="true"] {
+  border-color: #4d4d4d;
+  text-decoration: underline;
+
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  text-decoration: none;
+}
+
+.btn__danger {
+  background-color: #ca3c3c;
+  border-color: #bd2130;
+  color: white;
+}
+
+.btn__danger:hover {
+  box-shadow: 0 10px 22px rgba(202, 60, 60, 0.18);
+}
+
+.btn__filter {
+  border-color: lightgrey;
+}
+
+.btn__primary {
+  background-color: black;
+  color: white;
+
+  background: #0f172a;
+  border-color: #0f172a;
+}
+
+.btn__primary:hover {
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-group > * {
+  flex: 1 1 49%;
+}
+
+.btn-group > * + * {
+  margin-left: 0.8rem;
+}
+
+.label-wrapper {
+  flex: 0 0 100%;
+  margin: 0;
+  text-align: center;
+}
+
+.visually-hidden {
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  overflow: hidden;
+  position: absolute !important;
+  white-space: nowrap;
+  width: 1px;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+[class*="stack"] > * {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.stack-small > * + * {
+  margin-top: 1.25rem;
+}
+
+.stack-large > * + * {
+  margin-top: 2.5rem;
+}
+
+@media screen and (width >= 550px) {
+  .stack-small > * + * {
+    margin-top: 1.4rem;
+  }
+  .stack-large > * + * {
+    margin-top: 2.8rem;
+  }
+}
+
+.stack-exception {
+  margin-top: 1.2rem;
+}
+
+.todoapp {
+  background: white;
+  margin: 2rem 0 4rem 0;
+  padding: 1rem;
+  position: relative;
+  box-shadow:
+    0 2px 4px 0 rgb(0 0 0 / 20%),
+    0 2.5rem 5rem 0 rgb(0 0 0 / 10%);
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.10),
+    0 4px 10px rgba(15, 23, 42, 0.06);
+}
+
+@media screen and (width >= 550px) {
+  .todoapp {
+    padding: 4.5rem;
+  }
+}
+
+.todoapp > * {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50rem;
+}
+
+.todoapp > form {
+  max-width: 100%;
+}
+
+.todoapp > h1 {
+  display: block;
+  margin: 0;
+  margin-bottom: 1rem;
+  max-width: 100%;
+  text-align: center;
+}
+
+.label__lg {
+  line-height: 1.01567;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  text-align: center;
+}
+
+.input__lg {
+  border: 2px solid black;
+  padding: 2rem;
+  background: #fbfbfc;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 10px;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.input__lg:hover {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.28);
+}
+
+.input__lg:focus-visible {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+  border-color: var(--focus-outline);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+  background: #ffffff;
+}
+
+[class*="__lg"] {
+  display: inline-block;
+  font-size: 1.9rem;
+  width: 100%;
+}
+
+[class*="__lg"]:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+@media screen and (width >= 620px) {
+  [class*="__lg"] {
+    font-size: 2.4rem;
+  }
+}
+
+.todo {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.todo > * {
+  flex: 0 0 100%;
+}
+
+.todo-text {
+  border: 2px solid #565656;
+  min-height: 4.4rem;
+  padding: 0.4rem 0.8rem;
+  width: 100%;
+  background: #fbfbfc;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 10px;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.todo-text:hover {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.28);
+}
+
+.todo-text:focus-visible {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+  border-color: var(--focus-outline);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+  background: #ffffff;
+}
+
+.c-cb {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  clear: left;
+  display: block;
+  font-family: "Arial", sans-serif;
+  font-size: 1.6rem;
+  font-weight: normal;
+  line-height: 1.25;
+  min-height: 44px;
+  padding-left: 40px;
+  position: relative;
+}
+
+.c-cb > label::before,
+.c-cb > input[type="checkbox"] {
+  box-sizing: border-box;
+  height: 44px;
+  left: -2px;
+  top: -2px;
+  width: 44px;
+}
+
+.c-cb > input[type="checkbox"] {
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.c-cb > label {
+  cursor: pointer;
+  display: inline-block;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin-bottom: 0;
+  padding: 8px 15px 5px;
+  touch-action: manipulation;
+}
+
+.c-cb > label::before {
+  background: transparent;
+  border: 2px solid currentColor;
+  content: "";
+  position: absolute;
+
+  border-radius: 10px;
+}
+
+.c-cb > input[type="checkbox"]:focus-visible + label::before {
+  border-width: 2px;
+  border-color: var(--focus-outline);
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.c-cb > label::after {
+  background: transparent;
+  border: solid;
+  border-width: 0 0 5px 5px;
+  border-top-color: transparent;
+  box-sizing: content-box;
+  content: "";
+  height: 7px;
+  left: 9px;
+  opacity: 0;
+  position: absolute;
+  top: 11px;
+  transform: rotate(-45deg);
+  width: 18px;
+}
+
+.c-cb > input[type="checkbox"]:checked + label::after {
+  opacity: 1;
+}
