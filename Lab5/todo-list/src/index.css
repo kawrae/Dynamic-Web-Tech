@@ -456,7 +456,7 @@ body {
 }
 
 .navbar__title {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: 0.3px;
   margin: 0;
@@ -465,7 +465,8 @@ body {
 .navbar__link {
   text-decoration: none;
   color: rgba(255, 255, 255, 0.92);
-  font-weight: 600;
+  font-weight: 400;
+  font-size: 1.8rem;
   padding: 0.6rem 1rem;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.15);
