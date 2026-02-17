@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { nanoid } from "nanoid";
 import Todo from "./components/Todo";
 import Form from "./components/Form";
+import Navbar from "./components/Navbar";
 import FilterButton from "./components/FilterButton";
 
 function usePersistedState(key, fallbackValue) {
@@ -90,31 +91,37 @@ export default function App(props) {
   const headingText = `${remainingCount} ${tasksNoun} remaining`;
 
   return (
-    <div className="todoapp stack-large">
-      <h1>Todo List</h1>
+    <>
+      <Navbar />
 
-      <Form addTask={addTask} />
+      <main className="page">
+        <div className="todoapp stack-large">
+          <h1>Todo List</h1>
 
-      <div className="filters btn-group stack-exception">
-        {FILTER_NAMES.map((name) => (
-          <FilterButton
-            key={name}
-            name={name}
-            isPressed={name === filter}
-            setFilter={setFilter}
-          />
-        ))}
-      </div>
+          <Form addTask={addTask} />
 
-      <h2 id="list-heading">{headingText}</h2>
+          <div className="filters btn-group stack-exception">
+            {FILTER_NAMES.map((name) => (
+              <FilterButton
+                key={name}
+                name={name}
+                isPressed={name === filter}
+                setFilter={setFilter}
+              />
+            ))}
+          </div>
 
-      <ul
-        role="list"
-        className="todo-list stack-large stack-exception"
-        aria-labelledby="list-heading"
-      >
-        {taskList}
-      </ul>
-    </div>
+          <h2 id="list-heading">{headingText}</h2>
+
+          <ul
+            role="list"
+            className="todo-list stack-large stack-exception"
+            aria-labelledby="list-heading"
+          >
+            {taskList}
+          </ul>
+        </div>
+      </main>
+    </>
   );
 }
