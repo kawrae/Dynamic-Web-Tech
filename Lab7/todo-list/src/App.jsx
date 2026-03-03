@@ -38,17 +38,10 @@ export default function App(props) {
   const [lastInsertedId, setLastInsertedId] = useState("");
 
   function locateTask(id, location) {
-    console.log("locate Task", id, "before");
-    console.log(location, tasks);
-
     const locatedTaskList = tasks.map((task) => {
-      if (id === task.id) {
-        return { ...task, location };
-      }
+      if (id === task.id) return { ...task, location };
       return task;
     });
-
-    console.log(locatedTaskList);
     setTasks(locatedTaskList);
   }
 
@@ -56,33 +49,33 @@ export default function App(props) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
 
-    console.log(`Latitude: ${latitude}°, Longitude: ${longitude}°`);
-    console.log(
-      `Try here: https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`,
-    );
+    const mapURL = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+    const smsBody = encodeURIComponent(`My location: ${latitude}, ${longitude}\n${mapURL}`);
+    const smsURL = `sms:?&body=${smsBody}`;
 
-    locateTask(lastInsertedId, { latitude, longitude, error: "" });
+    locateTask(lastInsertedId, { latitude, longitude, error: "", mapURL, smsURL });
   };
 
   const error = () => {
-    console.log("Unable to retrieve your location");
     locateTask(lastInsertedId, {
       latitude: "##",
       longitude: "##",
       error: "unable-to-retrieve",
+      mapURL: "#",
+      smsURL: "#",
     });
   };
 
   const geoFindMe = () => {
     if (!navigator.geolocation) {
-      console.log("Geolocation is not supported by your browser");
       locateTask(lastInsertedId, {
         latitude: "##",
         longitude: "##",
         error: "not-supported",
+        mapURL: "#",
+        smsURL: "#",
       });
     } else {
-      console.log("Locating…");
       navigator.geolocation.getCurrentPosition(success, error);
     }
   };
@@ -97,7 +90,8 @@ export default function App(props) {
       id,
       name: trimmed,
       completed: false,
-      location: { latitude: "##", longitude: "##", error: "##" },
+      photo: false,
+      location: { latitude: "##", longitude: "##", error: "##", mapURL: "#", smsURL: "#" },
     };
 
     setLastInsertedId(id);
@@ -125,9 +119,16 @@ export default function App(props) {
     );
   }
 
-  const filteredTasks = useMemo(() => {
-    return tasks.filter(FILTER_MAP[filter]);
-  }, [tasks, filter]);
+  function photoedTask(id) {
+    console.log("photoedTask", id);
+    const photoedTaskList = tasks.map((task) => {
+      if (id === task.id) return { ...task, photo: true };
+      return task;
+    });
+    setTasks(photoedTaskList);
+  }
+
+  const filteredTasks = useMemo(() => tasks.filter(FILTER_MAP[filter]), [tasks, filter]);
 
   const taskList = filteredTasks.map((task) => (
     <Todo
@@ -135,8 +136,8 @@ export default function App(props) {
       id={task.id}
       name={task.name}
       completed={task.completed}
-      latitude={task.location?.latitude}
-      longitude={task.location?.longitude}
+      location={task.location}
+      photoedTask={photoedTask}
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
       editTask={editTask}
@@ -150,7 +151,6 @@ export default function App(props) {
   return (
     <>
       <Navbar />
-
       <main className="page">
         <div className="todoapp stack-large">
           <h1>Todo List</h1>
