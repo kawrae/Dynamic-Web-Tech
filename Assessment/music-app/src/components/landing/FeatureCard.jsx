@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { fadeUp } from "../../lib/motion";
 
 function FeatureCard({ title, text, buttonText, to }) {
   return (
-    <div className="rounded-[1.75rem] border border-white/10 bg-zinc-900/60 p-6">
+    <motion.div
+      variants={fadeUp}
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.2 }}
+      className="rounded-[1.75rem] border border-white/10 bg-zinc-900/60 p-6"
+    >
       <h4 className="text-xl font-semibold text-white">{title}</h4>
       <p className="mt-3 text-sm leading-7 text-zinc-400">{text}</p>
       <Link
@@ -11,7 +18,7 @@ function FeatureCard({ title, text, buttonText, to }) {
       >
         {buttonText}
       </Link>
-    </div>
+    </motion.div>
   );
 }
 

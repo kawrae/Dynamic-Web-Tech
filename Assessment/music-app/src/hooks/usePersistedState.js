@@ -2,21 +2,26 @@ import { useEffect, useState } from "react";
 
 export default function usePersistedState(key, defaultValue) {
   const [state, setState] = useState(() => {
-    const storedValue = localStorage.getItem(key);
+    try {
+      const storedValue = localStorage.getItem(key);
 
-    if (storedValue !== null) {
-      try {
+      if (storedValue !== null) {
         return JSON.parse(storedValue);
-      } catch (error) {
-        console.log(`Failed to parse localStorage key "${key}":`, error);
       }
+    } catch (error) {
+      console.error(`Failed to read localStorage key "${key}":`, error);
     }
 
     return defaultValue;
   });
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
+    try {
+      localStorage.setItem(key, JSON.stringify(state));
+    } catch (error) {
+      console.error(`Failed to save localStorage key "${key}":`, error);
+
+    }
   }, [key, state]);
 
   return [state, setState];
