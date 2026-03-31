@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMediaById } from "../db";
+import CameraGalleryChooser from "./CameraGalleryChooser";
 
 function IdeaCard({
   idea,
@@ -16,6 +18,7 @@ function IdeaCard({
   onCoverArtUpload,
   onAudioUpload,
 }) {
+  const [showCameraGalleryChooser, setShowCameraGalleryChooser] = useState(false);
   const media = useMediaById(idea.id);
 
   const displayCoverArt = isEditing
@@ -31,6 +34,10 @@ function IdeaCard({
       ...prev,
       [field]: value,
     }));
+  }
+
+  function handleCameraCapture(photoDataUrl) {
+    updateField("coverArt", photoDataUrl);
   }
 
   return (
@@ -88,7 +95,7 @@ function IdeaCard({
               </button>
               <button
                 type="button"
-                onClick={() => coverInputRef.current?.click()}
+                onClick={() => setShowCameraGalleryChooser(true)}
                 className="flex-1 rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
               >
                 Change Cover
@@ -170,6 +177,15 @@ function IdeaCard({
           </>
         )}
       </div>
+
+      {showCameraGalleryChooser && (
+        <CameraGalleryChooser
+          onClose={() => setShowCameraGalleryChooser(false)}
+          onGallerySelect={() => {}}
+          onCameraCapture={handleCameraCapture}
+          galleryInputRef={coverInputRef}
+        />
+      )}
     </div>
   );
 }

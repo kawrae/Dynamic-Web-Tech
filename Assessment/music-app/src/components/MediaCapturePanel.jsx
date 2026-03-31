@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Maximize, Minimize, Repeat2 } from "lucide-react";
 
 function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -7,6 +8,8 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
   const [audioDataUrl, setAudioDataUrl] = useState("");
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [photoDataUrl, setPhotoDataUrl] = useState("");
+  const [facingMode, setFacingMode] = useState("user");
+  const [isFullscreenCamera, setIsFullscreenCamera] = useState(false);
 
   const audioChunksRef = useRef([]);
   const currentStreamRef = useRef(null);
@@ -114,36 +117,32 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
     }
   };
 
-  const startCamera = async () => {
+  const startFullscreenCamera = async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
       onNotify?.("Camera unsupported", "Camera is not supported in this browser.");
       return;
     }
 
     try {
+      if (currentStreamRef.current) {
+        currentStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "user" } 
+        video: { facingMode } 
       });
       currentStreamRef.current = stream;
       setIsCameraOn(true);
-      onNotify?.("Camera activated", "Tap capture to take cover art.");
+      setIsFullscreenCamera(true);
+      onNotify?.("Camera opened", "Take a photo for your cover.");
       await requestNotificationPermission();
     } catch (error) {
       onNotify?.("Camera error", "Camera access denied or error occurred.");
-      console.error("Camera startCamera error:", error);
+      console.error("Camera error:", error);
     }
   };
 
-  const stopCamera = () => {
-    if (currentStreamRef.current) {
-      currentStreamRef.current.getTracks().forEach((track) => track.stop());
-      currentStreamRef.current = null;
-    }
-
-    setIsCameraOn(false);
-  };
-
-  const capturePhoto = () => {
+  const capturePhotoFromFullscreen = () => {
     if (!videoRef.current) return;
 
     const video = videoRef.current;
@@ -167,7 +166,43 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
     onCoverReady?.(photoUrl);
     onNotify?.("Cover photo ready", "Camera cover photo is attached to the form.");
     sendNotification("Cover photo set", "Your image is attached to the current track.");
+    
+    if (currentStreamRef.current) {
+      currentStreamRef.current.getTracks().forEach((track) => track.stop());
+    }
+    
+    setIsFullscreenCamera(false);
+    setIsCameraOn(false);
   };
+
+  const flipCamera = async () => {
+    const newFacingMode = facingMode === "user" ? "environment" : "user";
+    setFacingMode(newFacingMode);
+
+    if (currentStreamRef.current) {
+      currentStreamRef.current.getTracks().forEach((track) => track.stop());
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: newFacingMode },
+      });
+      currentStreamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error("Failed to switch camera:", error);
+    }
+  };
+
+  const closeFullscreenCamera = () => {
+    if (currentStreamRef.current) {
+      currentStreamRef.current.getTracks().forEach((track) => track.stop());
+    }
+    setIsFullscreenCamera(false);
+    setIsCameraOn(false);
+  }
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -207,30 +242,12 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
           <div className="mt-3 flex items-center gap-2">
             <button
               type="button"
-              onClick={isCameraOn ? stopCamera : startCamera}
+              onClick={startFullscreenCamera}
               className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm transition hover:bg-white/20"
             >
-              {isCameraOn ? "Stop camera" : "Open camera"}
-            </button>
-            <button
-              type="button"
-              onClick={capturePhoto}
-              disabled={!isCameraOn}
-              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm disabled:opacity-40"
-            >
-              Capture photo
+              Take Photo
             </button>
           </div>
-
-          {isCameraOn && (
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="mt-3 h-40 w-full rounded-xl border border-white/10 object-cover"
-            />
-          )}
 
           {photoDataUrl && (
             <img
@@ -241,6 +258,49 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
           )}
         </div>
       </div>
+
+      {isFullscreenCamera && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
+          <div className="relative w-full h-full flex flex-col">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-full object-cover"
+            />
+            
+            <div className="absolute top-4 right-4 flex gap-2">
+              <button
+                type="button"
+                onClick={flipCamera}
+                className="rounded-full border border-white/20 bg-white/20 p-3 text-white transition hover:bg-white/30"
+                title="Flip camera"
+              >
+                <Repeat2 className="w-6 h-6" />
+              </button>
+              <button
+                type="button"
+                onClick={closeFullscreenCamera}
+                className="rounded-full border border-white/20 bg-white/20 p-3 text-white transition hover:bg-white/30"
+                title="Close"
+              >
+                <Minimize className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4">
+              <button
+                type="button"
+                onClick={capturePhotoFromFullscreen}
+                className="rounded-full bg-white px-8 py-3 font-semibold text-black transition hover:bg-gray-200"
+              >
+                Take Photo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <p className="mt-3 text-xs text-zinc-400">
         Note: record/camera data is preserved in the form and saved with the next Add Track action.
