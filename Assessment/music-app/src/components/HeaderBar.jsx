@@ -1,4 +1,5 @@
 import MediaCapturePanel from "./MediaCapturePanel";
+import AudioPlayer from "./AudioPlayer";
 
 function HeaderBar({
   searchTerm,
@@ -26,7 +27,7 @@ function HeaderBar({
   }
 
   return (
-    <header className="border-b border-white/10 px-6 py-5">
+    <header className="border-b border-white/10 px-4 py-4 sm:px-6 sm:py-5">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -34,9 +35,7 @@ function HeaderBar({
             <h2 className="text-3xl font-semibold tracking-tight">
               Your workspace
             </h2>
-            <p className="mt-1 text-sm text-zinc-500">
-              
-            </p>
+            <p className="mt-1 text-sm text-zinc-500"></p>
           </div>
 
           <div className="w-full max-w-md">
@@ -45,25 +44,25 @@ function HeaderBar({
               placeholder="Search tracks, notes, or types..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+              className="w-full rounded-2xl border border-white/10 bg-zinc-900/70 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
             />
           </div>
         </div>
 
-        <div className="grid gap-4 rounded-3xl border border-white/10 bg-white/5 p-4 xl:grid-cols-[1.1fr_1fr_auto]">
+        <div className="grid gap-4 rounded-3xl border border-white/10 bg-zinc-900/60 p-4 shadow-lg shadow-black/20 xl:grid-cols-[1.1fr_1fr_auto]">
           <input
             type="text"
             placeholder="Track title..."
             value={trackForm.title}
             onChange={(e) => updateField("title", e.target.value)}
-            className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+            className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
           />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <select
               value={trackForm.type}
               onChange={(e) => updateField("type", e.target.value)}
-              className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white focus:outline-none"
+              className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
             >
               <option>Song</option>
               <option>Guitar Riff</option>
@@ -76,54 +75,18 @@ function HeaderBar({
               <button
                 type="button"
                 onClick={() => audioInputRef.current?.click()}
-                className="flex-1 rounded-2xl border border-white/10 px-4 py-3 text-sm text-zinc-200 hover:bg-white/5"
+                className="flex-1 rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-cyan-400/40 hover:bg-cyan-500/10"
               >
                 Audio
               </button>
               <button
                 type="button"
                 onClick={() => coverInputRef.current?.click()}
-                className="flex-1 rounded-2xl border border-white/10 px-4 py-3 text-sm text-zinc-200 hover:bg-white/5"
+                className="flex-1 rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-cyan-400/40 hover:bg-cyan-500/10"
               >
                 Cover
               </button>
             </div>
-          </div>
-
-          <div className="flex gap-3">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={onSaveEdit}
-                  className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black hover:bg-zinc-200"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={onCancelEditing}
-                  className="rounded-2xl border border-white/10 px-5 py-3 text-sm text-zinc-200 hover:bg-white/5"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={onCreateTrack}
-                  className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black hover:bg-zinc-200"
-                >
-                  Add Track
-                </button>
-                {(trackForm.audioUrl || trackForm.coverArt) && (
-                  <button
-                    onClick={onClearTracks}
-                    className="rounded-2xl border border-red-400/20 bg-red-500/10 px-5 py-3 text-sm text-red-300 hover:bg-red-500/20"
-                  >
-                    Clear Tracks
-                  </button>
-                )}
-              </>
-            )}
           </div>
 
           <div className="xl:col-span-3">
@@ -155,8 +118,8 @@ function HeaderBar({
 
                 {trackForm.audioUrl && (
                   <div className="rounded-2xl border border-white/10 p-2">
-                    <p className="mb-1 text-xs text-zinc-400">Audio preview</p>
-                    <audio controls className="w-full" src={trackForm.audioUrl} />
+                    <p className="mb-2 text-xs text-zinc-400">Audio preview</p>
+                    <AudioPlayer src={trackForm.audioUrl} />
                   </div>
                 )}
               </div>
@@ -167,7 +130,7 @@ function HeaderBar({
               placeholder="Add notes about chords, lyrics, arrangement, tone, BPM, or reminders..."
               value={trackForm.notes}
               onChange={(e) => updateField("notes", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+              className="w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
             />
           </div>
 
@@ -193,6 +156,42 @@ function HeaderBar({
               onCoverReady={onCoverReady}
               onNotify={onNotify}
             />
+          </div>
+
+          <div className="xl:col-span-3 flex flex-wrap gap-3 border-t border-white/10 pt-4">
+            {isEditing ? (
+              <>
+                <button
+                  onClick={onSaveEdit}
+                  className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={onCancelEditing}
+                  className="rounded-2xl border border-white/10 bg-zinc-950/60 px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/5"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={onCreateTrack}
+                  className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+                >
+                  Add Track
+                </button>
+                {(trackForm.audioUrl || trackForm.coverArt) && (
+                  <button
+                    onClick={onClearTracks}
+                    className="rounded-2xl border border-red-400/20 bg-red-500/10 px-5 py-3 text-sm text-red-300 transition hover:bg-red-500/20"
+                  >
+                    Clear Tracks
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

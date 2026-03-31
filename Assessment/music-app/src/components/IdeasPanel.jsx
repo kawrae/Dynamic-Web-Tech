@@ -16,6 +16,7 @@ function IdeasPanel({
   audioInputRef,
   onCoverArtUpload,
   onAudioUpload,
+  onViewTrack,
 }) {
   return (
     <div className="rounded-3xl border border-white/10 bg-zinc-900/50 p-6 md:p-8">
@@ -62,6 +63,7 @@ function IdeasPanel({
                   audioInputRef={audioInputRef}
                   onCoverArtUpload={onCoverArtUpload}
                   onAudioUpload={onAudioUpload}
+                  onViewTrack={onViewTrack}
                 />
               ))}
             </div>

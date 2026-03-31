@@ -6,6 +6,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
   const [audioUrl, setAudioUrl] = useState("");
   const [audioDataUrl, setAudioDataUrl] = useState("");
   const [photoDataUrl, setPhotoDataUrl] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const audioChunksRef = useRef([]);
   const devicePhotoInputRef = useRef(null);
@@ -146,8 +147,17 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
   };
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <h3 className="mb-3 text-lg font-semibold">Media Capture</h3>
+    <div className="rounded-2xl border border-white/10 bg-zinc-900/50 p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Media Capture</h3>
+        <button
+          type="button"
+          onClick={() => setIsExpanded((prev) => !prev)}
+          className="rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-1 text-xs font-medium text-zinc-200 transition hover:bg-white/10"
+        >
+          {isExpanded ? "Hide" : "Show"}
+        </button>
+      </div>
 
       <input
         ref={devicePhotoInputRef}
@@ -157,14 +167,15 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
         onChange={handlePhotoInput}
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      {isExpanded && (
+        <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-white/10 p-4">
           <p className="text-sm text-zinc-300">Mic recording</p>
           <div className="mt-3 flex items-center gap-2">
             <button
               type="button"
               onClick={isRecording ? stopRecording : startRecording}
-              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm transition hover:bg-white/20"
+              className="rounded-xl border border-white/20 bg-zinc-950/60 px-3 py-2 text-sm transition hover:border-emerald-400/40 hover:bg-emerald-500/10"
             >
               {isRecording ? "Stop" : "Start"}
             </button>
@@ -176,7 +187,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
                 new Audio(playbackUrl).play();
               }}
               disabled={!audioDataUrl && !audioUrl}
-              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm disabled:opacity-40"
+              className="rounded-xl border border-white/20 bg-zinc-950/60 px-3 py-2 text-sm transition hover:border-cyan-400/40 hover:bg-cyan-500/10 disabled:opacity-40"
             >
               Play recording
             </button>
@@ -192,14 +203,14 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
             <button
               type="button"
               onClick={pickCameraPhoto}
-              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm transition hover:bg-white/20"
+              className="rounded-xl border border-white/20 bg-zinc-950/60 px-3 py-2 text-sm transition hover:border-cyan-400/40 hover:bg-cyan-500/10"
             >
               Open Camera
             </button>
             <button
               type="button"
               onClick={pickGalleryPhoto}
-              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm transition hover:bg-white/20"
+              className="rounded-xl border border-white/20 bg-zinc-950/60 px-3 py-2 text-sm transition hover:border-cyan-400/40 hover:bg-cyan-500/10"
             >
               Choose Gallery
             </button>
@@ -214,6 +225,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
           )}
         </div>
       </div>
+      )}
 
       <p className="mt-3 text-xs text-zinc-400">
         Note: record/camera data is preserved in the form and saved with the next Add Track action.

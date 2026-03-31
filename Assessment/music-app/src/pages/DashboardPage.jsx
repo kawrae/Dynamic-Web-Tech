@@ -8,6 +8,7 @@ import Sidebar from "../components/Sidebar";
 import HeaderBar from "../components/HeaderBar";
 import IdeasPanel from "../components/IdeasPanel";
 import StoragePanel from "../components/StoragePanel";
+import TrackModal from "../components/TrackModal";
 
 const emptyTrackForm = {
   title: "",
@@ -23,6 +24,7 @@ function DashboardPage() {
   const [toasts, setToasts] = useState([]);
   const [editingTrackId, setEditingTrackId] = useState(null);
   const [trackForm, setTrackForm] = useState(emptyTrackForm);
+  const [viewingTrack, setViewingTrack] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const coverInputRef = useRef(null);
@@ -235,6 +237,10 @@ function DashboardPage() {
     }
   }
 
+  function cancelEditing() {
+    resetForm();
+  }
+
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
       Notification.requestPermission().then((permission) => {
@@ -245,8 +251,12 @@ function DashboardPage() {
     }
   }, []);
 
-  function cancelEditing() {
-    resetForm();
+  function viewTrack(track) {
+    setViewingTrack(track);
+  }
+
+  function closeTrackView() {
+    setViewingTrack(null);
   }
 
   async function deleteTrack(trackId) {
@@ -261,6 +271,48 @@ function DashboardPage() {
     if (editingTrackId === trackId) {
       resetForm();
     }
+
+    if (viewingTrack?.id === trackId) {
+      closeTrackView();
+    }
+  }
+
+  async function updateTrackFromModal(trackId, updates) {
+    const now = new Date().toISOString();
+
+    setTracks((prev) =>
+      prev.map((track) =>
+        track.id === trackId
+          ? {
+              ...track,
+              title: updates.title,
+              type: updates.type,
+              notes: updates.notes,
+              updatedAt: now,
+            }
+          : track
+      )
+    );
+
+    setViewingTrack((prev) =>
+      prev && prev.id === trackId
+        ? {
+            ...prev,
+            title: updates.title,
+            type: updates.type,
+            notes: updates.notes,
+            updatedAt: now,
+          }
+        : prev
+    );
+
+    await updateMedia(trackId, {
+      audioSrc: updates.audioUrl,
+      coverImg: updates.coverArt,
+    });
+
+    notifyUser("Track updated", `"${updates.title}" was updated.`);
+    vibrate();
   }
 
   function toggleFavourite(trackId) {
@@ -293,7 +345,7 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="flex min-h-screen w-full">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl">
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
         {isSidebarOpen && (
@@ -304,27 +356,27 @@ function DashboardPage() {
         )}
 
         <main className="flex-1">
-          <div className="flex items-center justify-between gap-2 border-b border-white/10 px-6 py-4 lg:hidden">
+          <div className="flex items-center justify-between border-b border-white/10 bg-zinc-950/60 px-4 py-3 backdrop-blur-sm lg:hidden">
             <Link
               to="/landing"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/10 hover:text-white"
             >
-              <ArrowLeft size={14} />
+              <ArrowLeft size={16} />
               Back
             </Link>
 
             <button
               type="button"
               onClick={() => setIsSidebarOpen(true)}
-              className="inline-flex items-center justify-center rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+              className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/10 hover:text-white"
               aria-label="Open navigation"
             >
-              <Menu size={16} />
+              <Menu size={18} />
             </button>
           </div>
 
           {toasts.map((toast) => (
-            <div key={toast.id} className="mx-6 mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+            <div key={toast.id} className="mx-4 mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100 shadow-lg shadow-emerald-950/20 lg:mx-6">
               {toast.message}
             </div>
           ))}
@@ -348,7 +400,7 @@ function DashboardPage() {
             onClearTracks={handleClearTracks}
           />
 
-          <section className="grid gap-6 px-6 py-8 xl:grid-cols-[1.55fr_0.95fr]">
+          <section className="grid gap-8 px-4 py-6 lg:px-6 lg:py-8 xl:grid-cols-[1.7fr_1fr]">
             <IdeasPanel
               tracks={tracks}
               filteredTracks={filteredTracks}
@@ -365,14 +417,23 @@ function DashboardPage() {
               audioInputRef={audioInputRef}
               onCoverArtUpload={handleCoverArtUpload}
               onAudioUpload={handleAudioUpload}
+              onViewTrack={viewTrack}
             />
 
-            <div className="space-y-6">
+            <div className="space-y-8 rounded-3xl border border-white/10 bg-zinc-900/40 p-4 shadow-lg shadow-black/20">
               <StoragePanel tracks={tracks} />
             </div>
           </section>
         </main>
       </div>
+
+      <TrackModal
+        track={viewingTrack}
+        onClose={closeTrackView}
+        onToggleFavourite={toggleFavourite}
+        onDeleteTrack={deleteTrack}
+        onUpdateTrack={updateTrackFromModal}
+      />
     </div>
   );
 }

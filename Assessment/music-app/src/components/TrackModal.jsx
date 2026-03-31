@@ -1,10 +1,34 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { X, Heart, Trash2, Pencil } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { X, Trash2, Pencil } from "lucide-react";
 import { useMediaById, deleteMedia } from "../db";
+import AudioPlayer from "./AudioPlayer";
 
-function TrackModal({ track, onClose, onToggleFavourite, onDeleteTrack }) {
+function TrackModal({
+  track,
+  onClose,
+  onToggleFavourite,
+  onDeleteTrack,
+  onUpdateTrack,
+}) {
   const media = useMediaById(track?.id);
+  const coverInputRef = useRef(null);
+  const audioInputRef = useRef(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [draft, setDraft] = useState({
+    title: "",
+    type: "Song",
+    notes: "",
+    audioUrl: "",
+    coverArt: "",
+  });
+
+  const resolvedMedia = useMemo(
+    () => ({
+      audioUrl: draft.audioUrl || media?.audioSrc || "",
+      coverArt: draft.coverArt || media?.coverImg || "",
+    }),
+    [draft.audioUrl, draft.coverArt, media?.audioSrc, media?.coverImg],
+  );
 
   useEffect(() => {
     if (!track) return;
@@ -19,111 +43,240 @@ function TrackModal({ track, onClose, onToggleFavourite, onDeleteTrack }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [track, onClose]);
 
+  useEffect(() => {
+    if (!track) return;
+
+    setDraft({
+      title: track.title || "",
+      type: track.type || "Song",
+      notes: track.notes || "",
+      audioUrl: media?.audioSrc || "",
+      coverArt: media?.coverImg || "",
+    });
+    setIsEditing(false);
+  }, [track, media?.audioSrc, media?.coverImg]);
+
   if (!track) return null;
 
   async function handleDelete() {
+    const confirmed = window.confirm(`Delete "${track.title}"?`);
+    if (!confirmed) return;
+
     await deleteMedia(track.id);
     onDeleteTrack(track.id);
   }
 
+  function updateDraft(field, value) {
+    setDraft((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function readFileAsDataURL(file, onLoad) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      onLoad(result);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleCoverUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    readFileAsDataURL(file, (dataUrl) => updateDraft("coverArt", dataUrl));
+    event.target.value = "";
+  }
+
+  function handleAudioUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    readFileAsDataURL(file, (dataUrl) => updateDraft("audioUrl", dataUrl));
+    event.target.value = "";
+  }
+
+  async function handleSaveEdit() {
+    const payload = {
+      title: draft.title.trim() || "Untitled Track",
+      type: draft.type,
+      notes: draft.notes,
+      audioUrl: resolvedMedia.audioUrl,
+      coverArt: resolvedMedia.coverArt,
+    };
+
+    await onUpdateTrack(track.id, payload);
+    setIsEditing(false);
+  }
+
+  function handleCancelEdit() {
+    setDraft({
+      title: track.title || "",
+      type: track.type || "Song",
+      notes: track.notes || "",
+      audioUrl: media?.audioSrc || "",
+      coverArt: media?.coverImg || "",
+    });
+    setIsEditing(false);
+  }
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm sm:items-center"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950 shadow-2xl"
+        className="relative my-4 w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-3xl border border-white/10 bg-zinc-900 p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 rounded-full border border-white/10 bg-zinc-900/80 p-2 text-zinc-300 hover:bg-white/10 hover:text-white"
+          className="absolute right-4 top-4 z-10 rounded-full p-2 text-zinc-400 hover:bg-white/10 hover:text-white"
         >
           <X size={18} />
         </button>
 
-        <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="bg-zinc-900">
-            {media?.coverImg ? (
-              <img
-                src={media.coverImg}
-                alt={track.title}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex min-h-[320px] items-center justify-center text-sm text-zinc-500">
-                No cover art
-              </div>
-            )}
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+              {isEditing ? draft.type : track.type}
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold tracking-tight text-white">
+              {isEditing ? draft.title || "Untitled Track" : track.title}
+            </h2>
+            <p className="mt-1 text-sm text-zinc-500">
+              Added: {new Date(track.createdAt).toLocaleDateString()}
+            </p>
           </div>
 
-          <div className="p-8">
-            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              {track.type}
-            </p>
+          {isEditing ? (
+            <div className="space-y-3 rounded-2xl border border-white/10 bg-zinc-950/60 p-3">
+              <input
+                type="text"
+                value={draft.title}
+                onChange={(e) => updateDraft("title", e.target.value)}
+                placeholder="Track title"
+                className="w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+              />
 
-            <div className="mt-3 flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-3xl font-semibold tracking-tight text-white">
-                  {track.title}
-                </h2>
-                <p className="mt-2 text-sm text-zinc-500">
-                  Added: {new Date(track.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => onToggleFavourite(track.id)}
-                className="rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
+              <select
+                value={draft.type}
+                onChange={(e) => updateDraft("type", e.target.value)}
+                className="w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-white focus:outline-none"
               >
-                {track.favourite ? "★ Saved" : "☆ Save"}
-              </button>
-            </div>
+                <option>Song</option>
+                <option>Guitar Riff</option>
+                <option>Demo</option>
+                <option>Voice Memo</option>
+                <option>Idea Sketch</option>
+              </select>
 
-            <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.03] p-5">
-              <h3 className="text-sm font-medium text-white">Notes</h3>
-              <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-zinc-400">
-                {track.notes || "No notes added."}
-              </p>
-            </div>
+              <textarea
+                rows="3"
+                value={draft.notes}
+                onChange={(e) => updateDraft("notes", e.target.value)}
+                placeholder="Track notes"
+                className="w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+              />
 
-            {media?.audioSrc && (
-              <div className="mt-6">
-                <h3 className="mb-3 text-sm font-medium text-white">Preview</h3>
-                <audio controls className="w-full">
-                  <source src={media.audioSrc} />
-                </audio>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => audioInputRef.current?.click()}
+                  className="rounded-xl border border-white/10 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                >
+                  Change Audio
+                </button>
+                <button
+                  type="button"
+                  onClick={() => coverInputRef.current?.click()}
+                  className="rounded-xl border border-white/10 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                >
+                  Change Cover
+                </button>
               </div>
+
+              <input
+                ref={audioInputRef}
+                type="file"
+                accept="audio/*"
+                className="hidden"
+                onChange={handleAudioUpload}
+              />
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleCoverUpload}
+              />
+            </div>
+          ) : (
+            track.notes && (
+              <p className="text-sm text-zinc-400">{track.notes}</p>
+            )
+          )}
+
+          {resolvedMedia.audioUrl && (
+            <AudioPlayer src={resolvedMedia.audioUrl} />
+          )}
+
+          {resolvedMedia.coverArt && (
+            <img
+              src={resolvedMedia.coverArt}
+              alt={track.title}
+              className="w-full rounded-2xl object-cover"
+            />
+          )}
+
+          <div className="flex flex-wrap gap-3 border-t border-white/10 pt-4">
+            {isEditing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleSaveEdit}
+                  className="rounded-2xl bg-white px-4 py-2 text-sm font-medium text-black hover:bg-zinc-200"
+                >
+                  Save Changes
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="inline-flex items-center gap-2 rounded-2xl border border-red-500/30 px-4 py-2 text-sm text-red-300 hover:bg-red-500/10"
+                >
+                  <Trash2 size={16} />
+                  Delete
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => onToggleFavourite(track.id)}
+                  className="rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                >
+                  {track.favourite ? "★ Saved" : "☆ Save"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                >
+                  <Pencil size={16} />
+                  Edit
+                </button>
+              </>
             )}
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black hover:bg-zinc-200"
-              >
-                <Pencil size={16} />
-                Edit in Dashboard
-              </Link>
-
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 px-5 py-3 text-sm text-red-300 hover:bg-red-500/10"
-              >
-                <Trash2 size={16} />
-                Delete
-              </button>
-
-              <button
-                type="button"
-                onClick={onClose}
-                className="rounded-2xl border border-white/10 px-5 py-3 text-sm text-zinc-200 hover:bg-white/5"
-              >
-                Close
-              </button>
-            </div>
           </div>
         </div>
       </div>

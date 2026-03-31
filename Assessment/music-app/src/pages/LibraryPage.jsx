@@ -5,6 +5,7 @@ import usePersistedState from "../hooks/usePersistedState";
 import Sidebar from "../components/Sidebar";
 import LibraryGrid from "../components/LibraryGrid";
 import TrackModal from "../components/TrackModal";
+import { updateMedia } from "../db";
 
 function LibraryPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -53,6 +54,41 @@ function LibraryPage() {
   function deleteTrack(trackId) {
     setTracks((prev) => prev.filter((track) => track.id !== trackId));
     setSelectedTrack((prev) => (prev?.id === trackId ? null : prev));
+  }
+
+  async function updateTrack(trackId, updates) {
+    const now = new Date().toISOString();
+
+    setTracks((prev) =>
+      prev.map((track) =>
+        track.id === trackId
+          ? {
+              ...track,
+              title: updates.title,
+              type: updates.type,
+              notes: updates.notes,
+              updatedAt: now,
+            }
+          : track
+      )
+    );
+
+    setSelectedTrack((prev) =>
+      prev && prev.id === trackId
+        ? {
+            ...prev,
+            title: updates.title,
+            type: updates.type,
+            notes: updates.notes,
+            updatedAt: now,
+          }
+        : prev
+    );
+
+    await updateMedia(trackId, {
+      audioSrc: updates.audioUrl,
+      coverImg: updates.coverArt,
+    });
   }
 
   return (
@@ -125,6 +161,7 @@ function LibraryPage() {
         onClose={closeModal}
         onToggleFavourite={toggleFavourite}
         onDeleteTrack={deleteTrack}
+        onUpdateTrack={updateTrack}
       />
     </div>
   );

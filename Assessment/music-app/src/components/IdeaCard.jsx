@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMediaById } from "../db";
 import CameraGalleryChooser from "./CameraGalleryChooser";
+import AudioPlayer from "./AudioPlayer";
 
 function IdeaCard({
   idea,
@@ -17,8 +18,10 @@ function IdeaCard({
   audioInputRef,
   onCoverArtUpload,
   onAudioUpload,
+  onViewTrack,
 }) {
-  const [showCameraGalleryChooser, setShowCameraGalleryChooser] = useState(false);
+  const [showCameraGalleryChooser, setShowCameraGalleryChooser] =
+    useState(false);
   const media = useMediaById(idea.id);
 
   const displayCoverArt = isEditing
@@ -149,18 +152,18 @@ function IdeaCard({
             )}
 
             {displayAudioUrl && (
-              <audio controls className="mt-4 w-full">
-                <source src={displayAudioUrl} />
-              </audio>
+              <div className="mt-4">
+                <AudioPlayer src={displayAudioUrl} />
+              </div>
             )}
 
             <div className="mt-4 flex gap-3">
-              <Link
-                to="/library"
+              <button
+                onClick={() => onViewTrack(idea)}
                 className="rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
               >
                 Open
-              </Link>
+              </button>
               <button
                 onClick={() => onStartEditing(idea)}
                 className="rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
