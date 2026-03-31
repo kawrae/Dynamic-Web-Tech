@@ -16,6 +16,7 @@ function HeaderBar({
   onRecordingReady,
   onCoverReady,
   onNotify,
+  onClearTracks,
 }) {
   function updateField(field, value) {
     setTrackForm((prev) => ({
@@ -106,12 +107,22 @@ function HeaderBar({
                 </button>
               </>
             ) : (
-              <button
-                onClick={onCreateTrack}
-                className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black hover:bg-zinc-200"
-              >
-                Add Track
-              </button>
+              <>
+                <button
+                  onClick={onCreateTrack}
+                  className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black hover:bg-zinc-200"
+                >
+                  Add Track
+                </button>
+                {(trackForm.audioUrl || trackForm.coverArt) && (
+                  <button
+                    onClick={onClearTracks}
+                    className="rounded-2xl border border-red-400/20 bg-red-500/10 px-5 py-3 text-sm text-red-300 hover:bg-red-500/20"
+                  >
+                    Clear Tracks
+                  </button>
+                )}
+              </>
             )}
           </div>
 
@@ -128,6 +139,28 @@ function HeaderBar({
                 </span>
               )}
             </div>
+
+            {(trackForm.coverArt || trackForm.audioUrl) && (
+              <div className="mb-3 grid gap-3 md:grid-cols-2">
+                {trackForm.coverArt && (
+                  <div className="rounded-2xl border border-white/10 p-2">
+                    <p className="mb-1 text-xs text-zinc-400">Cover preview</p>
+                    <img
+                      src={trackForm.coverArt}
+                      alt="Cover preview"
+                      className="h-28 w-full rounded-xl object-cover"
+                    />
+                  </div>
+                )}
+
+                {trackForm.audioUrl && (
+                  <div className="rounded-2xl border border-white/10 p-2">
+                    <p className="mb-1 text-xs text-zinc-400">Audio preview</p>
+                    <audio controls className="w-full" src={trackForm.audioUrl} />
+                  </div>
+                )}
+              </div>
+            )}
 
             <textarea
               rows="3"

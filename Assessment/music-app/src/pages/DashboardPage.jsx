@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -20,6 +20,7 @@ const emptyTrackForm = {
 function DashboardPage() {
   const [tracks, setTracks] = usePersistedState("music-library-tracks", []);
   const [searchTerm, setSearchTerm] = useState("");
+  const [toasts, setToasts] = useState([]);
   const [editingTrackId, setEditingTrackId] = useState(null);
   const [trackForm, setTrackForm] = useState(emptyTrackForm);
 
@@ -49,25 +50,48 @@ function DashboardPage() {
     notifyUser("Audio ready", "Voice recording is attached and ready to add to your track.");
   }
 
-  function handleCoverReady(coverDataUrl) {
-    updateTrackForm("coverArt", coverDataUrl);
-    notifyUser("Cover ready", "Camera cover photo is attached and ready to add to your track.");
+  function handleCoverReady(coverUrl) {
+    updateTrackForm("coverArt", coverUrl);
+    notifyUser("Cover ready", "Cover photo is attached and ready to add to your track.");
   }
 
-  async function notifyUser(title, body) {
-    if (!("Notification" in window)) return;
+  function handleClearTracks() {
+    updateTrackForm("audioUrl", "");
+    updateTrackForm("coverArt", "");
+    clearFileInputs();
+    showToast("Temporary media cleared.");
+  }
+
+  function showToast(message) {
+    const id = nanoid();
+    setToasts((prev) => [...prev, { id, message }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 2600);
+  }
+
+  async function notifyUser(title, body = "") {
+    const message = body ? `${title}: ${body}` : title;
+
+    if (!("Notification" in window)) {
+      showToast(message);
+      return;
+    }
 
     if (Notification.permission === "default") {
       try {
         await Notification.requestPermission();
       } catch (error) {
         console.error("Notification request failed", error);
+        showToast(message);
         return;
       }
     }
 
     if (Notification.permission === "granted") {
       new Notification(title, { body });
+    } else {
+      showToast(message);
     }
   }
 
@@ -201,6 +225,16 @@ function DashboardPage() {
     }
   }
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        if (permission !== "granted") {
+          showToast("Enable notifications for progress states and media updates.");
+        }
+      });
+    }
+  }, []);
+
   function cancelEditing() {
     resetForm();
   }
@@ -263,6 +297,12 @@ function DashboardPage() {
             </Link>
           </div>
 
+          {toasts.map((toast) => (
+            <div key={toast.id} className="mx-6 mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+              {toast.message}
+            </div>
+          ))}
+
           <HeaderBar
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -279,6 +319,7 @@ function DashboardPage() {
             onRecordingReady={handleRecordingReady}
             onCoverReady={handleCoverReady}
             onNotify={notifyUser}
+            onClearTracks={handleClearTracks}
           />
 
           <section className="grid gap-6 px-6 py-8 xl:grid-cols-[1.55fr_0.95fr]">

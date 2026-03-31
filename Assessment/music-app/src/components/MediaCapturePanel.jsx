@@ -4,6 +4,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioUrl, setAudioUrl] = useState("");
+  const [audioDataUrl, setAudioDataUrl] = useState("");
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [photoDataUrl, setPhotoDataUrl] = useState("");
 
@@ -60,17 +61,26 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
 
       recorder.onstop = () => {
         const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        const url = URL.createObjectURL(blob);
-        setAudioUrl(url);
-        onRecordingReady?.(url);
-        onNotify?.("Voice recording ready! Added to form audio URL.");
-        sendNotification("Recording saved", "Your voice memo is ready to attach to the track.");
+        const objectUrl = URL.createObjectURL(blob);
+        setAudioUrl(objectUrl);
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result;
+          if (typeof dataUrl === "string") {
+            setAudioDataUrl(dataUrl);
+            onRecordingReady?.(dataUrl);
+            onNotify?.("Voice recording ready", "Voice recording is attached to the form.");
+            sendNotification("Recording saved", "Your voice memo is ready to attach to the track.");
+          }
+        };
+        reader.readAsDataURL(blob);
       };
 
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(true);
-      onNotify?.("Recording started");
+      onNotify?.("Recording started", "The microphone is active.");
       await requestNotificationPermission();
     } catch (error) {
       onNotify?.("Microphone access denied or error occurred.");
@@ -105,7 +115,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
         videoRef.current.srcObject = stream;
       }
 
-      onNotify?.("Camera activated. Tap capture to grab cover art.");
+      onNotify?.("Camera activated", "Tap capture to take cover art.");
       await requestNotificationPermission();
     } catch (error) {
       onNotify?.("Camera access denied or error occurred.");
@@ -138,7 +148,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
     const photoUrl = canvas.toDataURL("image/jpeg", 0.92);
     setPhotoDataUrl(photoUrl);
     onCoverReady?.(photoUrl);
-    onNotify?.("Captured cover photo and set in form.");
+    onNotify?.("Cover photo ready", "Camera cover photo is attached to the form.");
     sendNotification("Cover photo set", "Your image is attached to the current track.");
   };
 
@@ -160,10 +170,11 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
             <button
               type="button"
               onClick={() => {
-                if (!audioUrl) return;
-                new Audio(audioUrl).play();
+                const playbackUrl = audioDataUrl || audioUrl;
+                if (!playbackUrl) return;
+                new Audio(playbackUrl).play();
               }}
-              disabled={!audioUrl}
+              disabled={!audioDataUrl && !audioUrl}
               className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm disabled:opacity-40"
             >
               Play recording
