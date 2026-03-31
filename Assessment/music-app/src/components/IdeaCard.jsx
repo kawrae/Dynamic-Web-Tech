@@ -94,6 +94,15 @@ function IdeaCard({
                 Change Cover
               </button>
             </div>
+            {displayCoverArt && (
+              <button
+                type="button"
+                onClick={() => updateField("coverArt", "")}
+                className="mt-2 rounded-2xl border border-red-500/30 px-4 py-2 text-sm text-red-300 hover:bg-red-500/10"
+              >
+                Remove Cover
+              </button>
+            )}
 
             <div className="flex gap-3">
               <button

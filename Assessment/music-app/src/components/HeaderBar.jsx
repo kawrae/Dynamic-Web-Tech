@@ -183,6 +183,7 @@ function HeaderBar({
             ref={coverInputRef}
             type="file"
             accept="image/*"
+            capture="environment"
             onChange={onCoverArtUpload}
             className="hidden"
           />
