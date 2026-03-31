@@ -181,9 +181,7 @@ function IdeaCard({
       {showCameraGalleryChooser && (
         <CameraGalleryChooser
           onClose={() => setShowCameraGalleryChooser(false)}
-          onGallerySelect={() => {}}
           onCameraCapture={handleCameraCapture}
-          galleryInputRef={coverInputRef}
         />
       )}
     </div>
