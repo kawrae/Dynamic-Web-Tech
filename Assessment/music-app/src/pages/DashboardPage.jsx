@@ -60,6 +60,7 @@ function DashboardPage() {
     updateTrackForm("audioUrl", "");
     updateTrackForm("coverArt", "");
     clearFileInputs();
+    vibrate();
     showToast("Temporary media cleared.");
   }
 
@@ -95,6 +96,12 @@ function DashboardPage() {
       showToast(message);
     }
   }
+
+  const vibrate = (pattern = 200) => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(pattern);
+    }
+  };
 
   function readFileAsDataUrl(file) {
     return new Promise((resolve, reject) => {
@@ -160,6 +167,7 @@ function DashboardPage() {
         coverImg: trackForm.coverArt,
       });
       notifyUser("Track uploaded", `"${trimmedTitle}" has been saved to your library.`);
+      vibrate();
     } catch (error) {
       console.error("Failed to save track media:", error);
     }
@@ -193,6 +201,7 @@ function DashboardPage() {
         coverImg: trackForm.coverArt,
       });
       notifyUser("Track updated", `"${trimmedTitle}" has been updated in your library.`);
+      vibrate();
     } catch (error) {
       console.error("Failed to update track media:", error);
     }

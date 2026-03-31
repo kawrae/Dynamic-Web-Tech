@@ -18,6 +18,12 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
       reader.readAsDataURL(file);
     });
 
+  const vibrate = (pattern = 200) => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(pattern);
+    }
+  };
+
   const sendNotification = (title, body) => {
     if (!("Notification" in window)) {
       onNotify?.(title, body);
@@ -84,6 +90,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(true);
+      vibrate();
       onNotify?.("Recording started", "The microphone is active.");
       await requestNotificationPermission();
     } catch (error) {
@@ -97,6 +104,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
 
     mediaRecorder.stop();
     setIsRecording(false);
+    vibrate();
     setMediaRecorder(null);
   };
 
@@ -107,6 +115,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
     try {
       const dataUrl = await readFileAsDataUrl(file);
       setPhotoDataUrl(dataUrl);
+      vibrate();
       onCoverReady?.(dataUrl);
       onNotify?.("Cover photo ready", "The photo is attached to the form.");
       sendNotification("Cover photo set", "Your image is attached to the current track.");
