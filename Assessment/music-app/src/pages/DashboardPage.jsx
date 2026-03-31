@@ -41,23 +41,6 @@ function DashboardPage() {
     clearFileInputs();
   }
 
-  function updateTrackForm(field, value) {
-    setTrackForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  }
-
-  function handleRecordingReady(audioUrl) {
-    updateTrackForm("audioUrl", audioUrl);
-    notifyUser("Audio ready", "Voice recording is attached and ready to add to your track.");
-  }
-
-  function handleCoverReady(coverUrl) {
-    updateTrackForm("coverArt", coverUrl);
-    notifyUser("Cover ready", "Cover photo is attached and ready to add to your track.");
-  }
-
   function handleClearTracks() {
     updateTrackForm("audioUrl", "");
     updateTrackForm("coverArt", "");
@@ -100,7 +83,7 @@ function DashboardPage() {
   }
 
   const vibrate = (pattern = 200) => {
-    if ('vibrate' in navigator) {
+    if ("vibrate" in navigator) {
       navigator.vibrate(pattern);
     }
   };
@@ -123,7 +106,10 @@ function DashboardPage() {
     try {
       const result = await readFileAsDataUrl(file);
       updateTrackForm("coverArt", result);
-      notifyUser("Cover attached", "The selected cover image is ready to add to your track.");
+      notifyUser(
+        "Cover attached",
+        "The selected cover image is ready to add to your track.",
+      );
     } catch (error) {
       console.error("Failed to read cover image:", error);
     }
@@ -136,7 +122,10 @@ function DashboardPage() {
     try {
       const result = await readFileAsDataUrl(file);
       updateTrackForm("audioUrl", result);
-      notifyUser("Audio attached", "The selected audio file is ready to add to your track.");
+      notifyUser(
+        "Audio attached",
+        "The selected audio file is ready to add to your track.",
+      );
     } catch (error) {
       console.error("Failed to read audio file:", error);
     }
@@ -168,7 +157,10 @@ function DashboardPage() {
         audioSrc: trackForm.audioUrl,
         coverImg: trackForm.coverArt,
       });
-      notifyUser("Track uploaded", `"${trimmedTitle}" has been saved to your library.`);
+      notifyUser(
+        "Track uploaded",
+        `"${trimmedTitle}" has been saved to your library.`,
+      );
       vibrate();
     } catch (error) {
       console.error("Failed to save track media:", error);
@@ -193,8 +185,8 @@ function DashboardPage() {
               type: trackForm.type,
               updatedAt: new Date().toISOString(),
             }
-          : track
-      )
+          : track,
+      ),
     );
 
     try {
@@ -202,7 +194,10 @@ function DashboardPage() {
         audioSrc: trackForm.audioUrl,
         coverImg: trackForm.coverArt,
       });
-      notifyUser("Track updated", `"${trimmedTitle}" has been updated in your library.`);
+      notifyUser(
+        "Track updated",
+        `"${trimmedTitle}" has been updated in your library.`,
+      );
       vibrate();
     } catch (error) {
       console.error("Failed to update track media:", error);
@@ -242,10 +237,16 @@ function DashboardPage() {
   }
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+    if (
+      typeof window !== "undefined" &&
+      "Notification" in window &&
+      Notification.permission === "default"
+    ) {
       Notification.requestPermission().then((permission) => {
         if (permission !== "granted") {
-          showToast("Enable notifications for progress states and media updates.");
+          showToast(
+            "Enable notifications for progress states and media updates.",
+          );
         }
       });
     }
@@ -290,8 +291,8 @@ function DashboardPage() {
               notes: updates.notes,
               updatedAt: now,
             }
-          : track
-      )
+          : track,
+      ),
     );
 
     setViewingTrack((prev) =>
@@ -303,7 +304,7 @@ function DashboardPage() {
             notes: updates.notes,
             updatedAt: now,
           }
-        : prev
+        : prev,
     );
 
     await updateMedia(trackId, {
@@ -320,8 +321,8 @@ function DashboardPage() {
       prev.map((track) =>
         track.id === trackId
           ? { ...track, favourite: !track.favourite }
-          : track
-      )
+          : track,
+      ),
     );
   }
 
@@ -336,9 +337,7 @@ function DashboardPage() {
       const type = track.type?.toLowerCase() || "";
 
       return (
-        title.includes(query) ||
-        notes.includes(query) ||
-        type.includes(query)
+        title.includes(query) || notes.includes(query) || type.includes(query)
       );
     });
   }, [tracks, searchTerm]);
@@ -346,7 +345,10 @@ function DashboardPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto flex min-h-screen w-full max-w-7xl">
-        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
 
         {isSidebarOpen && (
           <div
@@ -376,7 +378,10 @@ function DashboardPage() {
           </div>
 
           {toasts.map((toast) => (
-            <div key={toast.id} className="mx-4 mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100 shadow-lg shadow-emerald-950/20 lg:mx-6">
+            <div
+              key={toast.id}
+              className="mx-4 mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100 shadow-lg shadow-emerald-950/20 lg:mx-6"
+            >
               {toast.message}
             </div>
           ))}
@@ -389,14 +394,9 @@ function DashboardPage() {
             onCreateTrack={createTrack}
             onSaveEdit={() => saveTrackEdit(editingTrackId)}
             isEditing={Boolean(editingTrackId)}
-            coverInputRef={coverInputRef}
             audioInputRef={audioInputRef}
-            onCoverArtUpload={handleCoverArtUpload}
             onAudioUpload={handleAudioUpload}
             onCancelEditing={cancelEditing}
-            onRecordingReady={handleRecordingReady}
-            onCoverReady={handleCoverReady}
-            onNotify={notifyUser}
             onClearTracks={handleClearTracks}
           />
 
