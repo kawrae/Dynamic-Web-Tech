@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Menu } from "lucide-react";
 import { nanoid } from "nanoid";
 import usePersistedState from "../hooks/usePersistedState";
 import { saveMedia, updateMedia, getMediaById, deleteMedia } from "../db";
@@ -23,6 +23,7 @@ function DashboardPage() {
   const [toasts, setToasts] = useState([]);
   const [editingTrackId, setEditingTrackId] = useState(null);
   const [trackForm, setTrackForm] = useState(emptyTrackForm);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const coverInputRef = useRef(null);
   const audioInputRef = useRef(null);
@@ -284,10 +285,17 @@ function DashboardPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="flex min-h-screen w-full">
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
         <main className="flex-1">
-          <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4 lg:hidden">
+          <div className="flex items-center justify-between gap-2 border-b border-white/10 px-6 py-4 lg:hidden">
             <Link
               to="/landing"
               className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
@@ -295,6 +303,15 @@ function DashboardPage() {
               <ArrowLeft size={14} />
               Back
             </Link>
+
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(true)}
+              className="inline-flex items-center justify-center rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+              aria-label="Open navigation"
+            >
+              <Menu size={16} />
+            </button>
           </div>
 
           {toasts.map((toast) => (

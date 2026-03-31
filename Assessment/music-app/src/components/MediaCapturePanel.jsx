@@ -33,16 +33,21 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
   };
 
   const sendNotification = (title, body) => {
-    if (!("Notification" in window)) return;
+    if (!("Notification" in window)) {
+      onNotify?.(title, body);
+      return;
+    }
 
     if (Notification.permission === "granted") {
       new Notification(title, { body });
+    } else {
+      onNotify?.(title, body);
     }
   };
 
   const startRecording = async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
-      onNotify?.("Microphone is not supported in this browser.");
+      onNotify?.("Microphone unsupported", "Microphone is not supported in this browser.");
       return;
     }
 
@@ -83,7 +88,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
       onNotify?.("Recording started", "The microphone is active.");
       await requestNotificationPermission();
     } catch (error) {
-      onNotify?.("Microphone access denied or error occurred.");
+      onNotify?.("Microphone error", "Microphone access denied or error occurred.");
       console.error("Microphone startRecording error:", error);
     }
   };
@@ -113,12 +118,15 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current
+          .play()
+          .catch((error) => console.warn("Video play not available immediately:", error));
       }
 
       onNotify?.("Camera activated", "Tap capture to take cover art.");
       await requestNotificationPermission();
     } catch (error) {
-      onNotify?.("Camera access denied or error occurred.");
+      onNotify?.("Camera error", "Camera access denied or error occurred.");
       console.error("Camera startCamera error:", error);
     }
   };
@@ -136,6 +144,12 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
     if (!videoRef.current) return;
 
     const video = videoRef.current;
+
+    if (!video.videoWidth || !video.videoHeight) {
+      onNotify?.("Camera error", "Unable to capture image - camera stream not ready.");
+      return;
+    }
+
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;

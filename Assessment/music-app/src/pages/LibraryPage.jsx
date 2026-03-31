@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Menu } from "lucide-react";
 import usePersistedState from "../hooks/usePersistedState";
 import Sidebar from "../components/Sidebar";
 import LibraryGrid from "../components/LibraryGrid";
 import TrackModal from "../components/TrackModal";
 
 function LibraryPage() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [tracks, setTracks] = usePersistedState("music-library-tracks", []);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTrack, setSelectedTrack] = useState(null);
@@ -55,9 +58,35 @@ function LibraryPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="flex min-h-screen w-full">
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
         <main className="flex-1">
+          <div className="flex items-center justify-between gap-2 border-b border-white/10 px-6 py-4 lg:hidden">
+            <Link
+              to="/landing"
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+            >
+              <ArrowLeft size={14} />
+              Back
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(true)}
+              className="inline-flex items-center justify-center rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+              aria-label="Open navigation"
+            >
+              <Menu size={16} />
+            </button>
+          </div>
+
           <header className="border-b border-white/10 px-6 py-5">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
