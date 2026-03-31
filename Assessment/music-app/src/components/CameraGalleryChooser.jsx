@@ -78,13 +78,13 @@ function CameraGalleryChooser({ onClose, onCameraCapture, galleryInputRef }) {
               onClick={openCameraAttachment}
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10"
             >
-              📷 Use Device Camera
+              Use Device Camera
             </button>
             <button
               onClick={openGalleryAttachment}
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10"
             >
-              📁 Choose from Gallery
+              Choose from Gallery
             </button>
           </div>
         </div>
