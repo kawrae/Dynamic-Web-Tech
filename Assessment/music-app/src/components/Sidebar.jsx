@@ -27,7 +27,7 @@ function Sidebar() {
         </h1>
 
         <p className="mt-2 text-sm text-zinc-400">
-          Store demos, riffs, notes, and recordings in one organised workspace.
+          
         </p>
       </div>
 

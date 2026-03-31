@@ -23,16 +23,7 @@ function IdeasPanel({
         <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
           <h3 className="text-xl font-semibold">No tracks yet</h3>
           <p className="mt-2 max-w-md text-sm text-zinc-400">
-            Start by adding a song idea, guitar riff, demo, or voice memo. Your
-            library will appear here in a visual grid.
           </p>
-
-          <button
-            onClick={onCreateTrack}
-            className="mt-6 rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black hover:bg-zinc-200"
-          >
-            Create your first track
-          </button>
         </div>
       ) : (
         <div>

@@ -46,8 +46,6 @@ function StoragePanel({ tracks }) {
       </div>
 
       <p className="mt-4 text-sm text-zinc-500">
-        Your track details are stored in local storage, while cover art and
-        audio previews are stored locally in IndexedDB.
       </p>
     </div>
   );

@@ -29,7 +29,7 @@ function HeaderBar({
               Your workspace
             </h2>
             <p className="mt-1 text-sm text-zinc-500">
-              Manage your tracks, riffs, and recordings in one place.
+              
             </p>
           </div>
 
