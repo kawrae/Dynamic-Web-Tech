@@ -39,7 +39,7 @@ function HeroSection() {
 
         <motion.div
           variants={fadeUp}
-          className="mt-8 flex flex-col gap-4 sm:flex-row"
+          className="mt-8 flex flex-row flex-wrap items-center gap-4"
         >
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
             <Link
@@ -106,7 +106,7 @@ function HeroSection() {
         variants={scaleIn}
         initial="hidden"
         animate="visible"
-        className="relative flex items-center justify-center"
+        className="relative hidden items-center justify-center lg:flex"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500/10 via-violet-500/10 to-cyan-400/10 blur-3xl" />
 

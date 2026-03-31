@@ -1,3 +1,5 @@
+import MediaCapturePanel from "./MediaCapturePanel";
+
 function HeaderBar({
   searchTerm,
   setSearchTerm,
@@ -11,6 +13,9 @@ function HeaderBar({
   onCoverArtUpload,
   onAudioUpload,
   onCancelEditing,
+  onRecordingReady,
+  onCoverReady,
+  onNotify,
 }) {
   function updateField(field, value) {
     setTrackForm((prev) => ({
@@ -111,6 +116,19 @@ function HeaderBar({
           </div>
 
           <div className="xl:col-span-3">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              {trackForm.audioUrl && (
+                <span className="rounded-full border border-emerald-400/40 bg-emerald-500/20 px-3 py-1 text-xs text-emerald-300">
+                  Audio uploaded
+                </span>
+              )}
+              {trackForm.coverArt && (
+                <span className="rounded-full border border-cyan-400/40 bg-cyan-500/20 px-3 py-1 text-xs text-cyan-300">
+                  Cover uploaded
+                </span>
+              )}
+            </div>
+
             <textarea
               rows="3"
               placeholder="Add notes about chords, lyrics, arrangement, tone, BPM, or reminders..."
@@ -135,6 +153,14 @@ function HeaderBar({
             onChange={onCoverArtUpload}
             className="hidden"
           />
+
+          <div className="xl:col-span-3">
+            <MediaCapturePanel
+              onRecordingReady={onRecordingReady}
+              onCoverReady={onCoverReady}
+              onNotify={onNotify}
+            />
+          </div>
         </div>
       </div>
     </header>

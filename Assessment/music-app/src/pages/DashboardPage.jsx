@@ -1,4 +1,6 @@
 import { useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { nanoid } from "nanoid";
 import usePersistedState from "../hooks/usePersistedState";
 import { saveMedia, updateMedia, getMediaById, deleteMedia } from "../db";
@@ -42,6 +44,33 @@ function DashboardPage() {
     }));
   }
 
+  function handleRecordingReady(audioUrl) {
+    updateTrackForm("audioUrl", audioUrl);
+    notifyUser("Audio ready", "Voice recording is attached and ready to add to your track.");
+  }
+
+  function handleCoverReady(coverDataUrl) {
+    updateTrackForm("coverArt", coverDataUrl);
+    notifyUser("Cover ready", "Camera cover photo is attached and ready to add to your track.");
+  }
+
+  async function notifyUser(title, body) {
+    if (!("Notification" in window)) return;
+
+    if (Notification.permission === "default") {
+      try {
+        await Notification.requestPermission();
+      } catch (error) {
+        console.error("Notification request failed", error);
+        return;
+      }
+    }
+
+    if (Notification.permission === "granted") {
+      new Notification(title, { body });
+    }
+  }
+
   function readFileAsDataUrl(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -60,6 +89,7 @@ function DashboardPage() {
     try {
       const result = await readFileAsDataUrl(file);
       updateTrackForm("coverArt", result);
+      notifyUser("Cover attached", "The selected cover image is ready to add to your track.");
     } catch (error) {
       console.error("Failed to read cover image:", error);
     }
@@ -72,6 +102,7 @@ function DashboardPage() {
     try {
       const result = await readFileAsDataUrl(file);
       updateTrackForm("audioUrl", result);
+      notifyUser("Audio attached", "The selected audio file is ready to add to your track.");
     } catch (error) {
       console.error("Failed to read audio file:", error);
     }
@@ -103,6 +134,7 @@ function DashboardPage() {
         audioSrc: trackForm.audioUrl,
         coverImg: trackForm.coverArt,
       });
+      notifyUser("Track uploaded", `"${trimmedTitle}" has been saved to your library.`);
     } catch (error) {
       console.error("Failed to save track media:", error);
     }
@@ -135,6 +167,7 @@ function DashboardPage() {
         audioSrc: trackForm.audioUrl,
         coverImg: trackForm.coverArt,
       });
+      notifyUser("Track updated", `"${trimmedTitle}" has been updated in your library.`);
     } catch (error) {
       console.error("Failed to update track media:", error);
     }
@@ -220,6 +253,16 @@ function DashboardPage() {
         <Sidebar />
 
         <main className="flex-1">
+          <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4 lg:hidden">
+            <Link
+              to="/landing"
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+            >
+              <ArrowLeft size={14} />
+              Back
+            </Link>
+          </div>
+
           <HeaderBar
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -233,6 +276,9 @@ function DashboardPage() {
             onCoverArtUpload={handleCoverArtUpload}
             onAudioUpload={handleAudioUpload}
             onCancelEditing={cancelEditing}
+            onRecordingReady={handleRecordingReady}
+            onCoverReady={handleCoverReady}
+            onNotify={notifyUser}
           />
 
           <section className="grid gap-6 px-6 py-8 xl:grid-cols-[1.55fr_0.95fr]">
