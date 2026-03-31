@@ -20,6 +20,15 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (isCameraOn && videoRef.current && currentStreamRef.current) {
+      videoRef.current.srcObject = currentStreamRef.current;
+      videoRef.current.play().catch((error) => {
+        console.warn("Video autoplay failed:", error);
+      });
+    }
+  }, [isCameraOn]);
+
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) return;
 
@@ -107,22 +116,16 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
 
   const startCamera = async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
-      onNotify?.("Camera is not supported in this browser.");
+      onNotify?.("Camera unsupported", "Camera is not supported in this browser.");
       return;
     }
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "user" } 
+      });
       currentStreamRef.current = stream;
       setIsCameraOn(true);
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current
-          .play()
-          .catch((error) => console.warn("Video play not available immediately:", error));
-      }
-
       onNotify?.("Camera activated", "Tap capture to take cover art.");
       await requestNotificationPermission();
     } catch (error) {
