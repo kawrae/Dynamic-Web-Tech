@@ -394,9 +394,7 @@ function DashboardPage() {
             onCreateTrack={createTrack}
             onSaveEdit={() => saveTrackEdit(editingTrackId)}
             isEditing={Boolean(editingTrackId)}
-            coverInputRef={coverInputRef}
             audioInputRef={audioInputRef}
-            onCoverArtUpload={handleCoverArtUpload}
             onAudioUpload={handleAudioUpload}
             onCancelEditing={cancelEditing}
             onClearTracks={handleClearTracks}

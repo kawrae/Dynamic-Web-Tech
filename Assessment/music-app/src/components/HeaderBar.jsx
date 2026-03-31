@@ -1,4 +1,6 @@
+import { useState } from "react";
 import AudioPlayer from "./AudioPlayer";
+import CameraGalleryChooser from "./CameraGalleryChooser";
 
 function HeaderBar({
   searchTerm,
@@ -8,18 +10,23 @@ function HeaderBar({
   onCreateTrack,
   onSaveEdit,
   isEditing,
-  coverInputRef,
   audioInputRef,
-  onCoverArtUpload,
   onAudioUpload,
   onCancelEditing,
   onClearTracks,
 }) {
+  const [showCameraGalleryChooser, setShowCameraGalleryChooser] = useState(false);
+
   function updateField(field, value) {
     setTrackForm((prev) => ({
       ...prev,
       [field]: value,
     }));
+  }
+
+  function handleCameraCapture(photoDataUrl) {
+    updateField("coverArt", photoDataUrl);
+    setShowCameraGalleryChooser(false);
   }
 
   return (
@@ -78,7 +85,7 @@ function HeaderBar({
 
               <button
                 type="button"
-                onClick={() => coverInputRef.current?.click()}
+                onClick={() => setShowCameraGalleryChooser(true)}
                 className="flex-1 rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-cyan-400/40 hover:bg-cyan-500/10"
               >
                 Cover
@@ -140,14 +147,6 @@ function HeaderBar({
             className="hidden"
           />
 
-          <input
-            ref={coverInputRef}
-            type="file"
-            accept="image/*"
-            onChange={onCoverArtUpload}
-            className="hidden"
-          />
-
           <div className="xl:col-span-3 flex flex-wrap gap-3 border-t border-white/10 pt-4">
             {isEditing ? (
               <>
@@ -187,6 +186,13 @@ function HeaderBar({
           </div>
         </div>
       </div>
+
+      {showCameraGalleryChooser && (
+        <CameraGalleryChooser
+          onClose={() => setShowCameraGalleryChooser(false)}
+          onCameraCapture={handleCameraCapture}
+        />
+      )}
     </header>
   );
 }
