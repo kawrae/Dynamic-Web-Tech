@@ -1,4 +1,3 @@
-import MediaCapturePanel from "./MediaCapturePanel";
 import AudioPlayer from "./AudioPlayer";
 
 function HeaderBar({
@@ -14,9 +13,6 @@ function HeaderBar({
   onCoverArtUpload,
   onAudioUpload,
   onCancelEditing,
-  onRecordingReady,
-  onCoverReady,
-  onNotify,
   onClearTracks,
 }) {
   function updateField(field, value) {
@@ -71,7 +67,7 @@ function HeaderBar({
               <option>Idea Sketch</option>
             </select>
 
-            <div className="flex gap-2">
+            <div className="relative flex gap-2">
               <button
                 type="button"
                 onClick={() => audioInputRef.current?.click()}
@@ -150,14 +146,6 @@ function HeaderBar({
             className="hidden"
           />
 
-          <div className="xl:col-span-3">
-            <MediaCapturePanel
-              onRecordingReady={onRecordingReady}
-              onCoverReady={onCoverReady}
-              onNotify={onNotify}
-            />
-          </div>
-
           <div className="xl:col-span-3 flex flex-wrap gap-3 border-t border-white/10 pt-4">
             {isEditing ? (
               <>
@@ -195,6 +183,7 @@ function HeaderBar({
           </div>
         </div>
       </div>
+
     </header>
   );
 }
