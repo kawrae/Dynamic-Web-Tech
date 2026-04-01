@@ -137,7 +137,12 @@ function IdeaCard({
 
               <button
                 onClick={() => onToggleFavourite(idea.id)}
-                className="rounded-2xl border border-white/10 px-3 py-2 text-xs text-zinc-200 hover:bg-white/5"
+                className={
+                  "rounded-2xl border px-3 py-2 text-xs transition " +
+                  (idea.favourite
+                    ? "border-indigo-400/35 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/15"
+                    : "border-white/10 text-zinc-200 hover:border-indigo-400/30 hover:bg-indigo-500/10")
+                }
               >
                 {idea.favourite ? "★ Saved" : "☆ Save"}
               </button>

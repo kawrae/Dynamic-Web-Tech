@@ -7,7 +7,7 @@ function LibraryItem({ track, onSelectTrack }) {
     <button
       type="button"
       onClick={() => onSelectTrack(track)}
-      className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 text-left transition hover:-translate-y-1 hover:border-white/20"
+      className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 text-left transition hover:-translate-y-1 hover:border-indigo-400/30 hover:bg-indigo-500/5"
     >
       <div className="aspect-square bg-zinc-900">
         {media?.coverImg ? (
@@ -37,7 +37,14 @@ function LibraryItem({ track, onSelectTrack }) {
             </p>
           </div>
 
-          <span className="rounded-2xl border border-white/10 px-3 py-2 text-xs text-zinc-200">
+          <span
+            className={
+              "rounded-2xl border px-3 py-2 text-xs " +
+              (track.favourite
+                ? "border-indigo-400/35 bg-indigo-500/10 text-indigo-200"
+                : "border-white/10 text-zinc-200")
+            }
+          >
             {track.favourite ? "★ Saved" : "Open"}
           </span>
         </div>

@@ -31,7 +31,7 @@ function DeveloperSection() {
             variants={fadeUp}
             whileHover={{ y: -4 }}
             transition={{ duration: 0.2 }}
-            className="rounded-3xl border border-white/10 bg-zinc-900/60 p-6"
+            className="rounded-3xl border border-white/10 bg-zinc-900/60 p-6 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/[0.06]"
           >
             <h4 className="text-lg font-medium text-white">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -45,7 +45,7 @@ function DeveloperSection() {
             variants={fadeUp}
             whileHover={{ y: -4 }}
             transition={{ duration: 0.2 }}
-            className="rounded-3xl border border-white/10 bg-zinc-900/60 p-6"
+            className="rounded-3xl border border-white/10 bg-zinc-900/60 p-6 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/[0.06]"
           >
             <h4 className="text-lg font-medium text-white">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -59,7 +59,7 @@ function DeveloperSection() {
             variants={fadeUp}
             whileHover={{ y: -4 }}
             transition={{ duration: 0.2 }}
-            className="rounded-3xl border border-white/10 bg-zinc-900/60 p-6"
+            className="rounded-3xl border border-white/10 bg-zinc-900/60 p-6 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/[0.06]"
           >
             <h4 className="text-lg font-medium text-white">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.

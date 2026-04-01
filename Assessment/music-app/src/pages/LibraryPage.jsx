@@ -121,7 +121,7 @@ function LibraryPage() {
           <div className="flex items-center justify-between gap-2 border-b border-white/10 px-6 py-4 lg:hidden">
             <Link
               to="/landing"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:border-indigo-400/35 hover:bg-indigo-500/10 hover:text-indigo-100"
             >
               <ArrowLeft size={14} />
               Back
@@ -130,7 +130,7 @@ function LibraryPage() {
             <button
               type="button"
               onClick={() => setIsSidebarOpen(true)}
-              className="inline-flex items-center justify-center rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+              className="inline-flex items-center justify-center rounded-2xl border border-white/10 px-3 py-2 text-sm text-zinc-300 transition hover:border-indigo-400/35 hover:bg-indigo-500/10 hover:text-indigo-100"
               aria-label="Open navigation"
             >
               <Menu size={16} />
@@ -155,7 +155,7 @@ function LibraryPage() {
                   placeholder="Search library..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-400/35"
                 />
               </div>
             </div>

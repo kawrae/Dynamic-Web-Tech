@@ -1,12 +1,11 @@
-import { Link, NavLink } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 function navClass({ isActive }) {
   return [
-    "block w-full rounded-2xl px-4 py-3 text-left text-sm transition",
+    "block w-full rounded-2xl border px-4 py-3 text-left text-sm transition",
     isActive
-      ? "bg-white font-medium text-black"
-      : "text-zinc-300 hover:bg-white/5",
+      ? "border-indigo-400/35 bg-indigo-500/10 font-medium text-indigo-100"
+      : "border-transparent text-zinc-300 hover:border-indigo-400/20 hover:bg-indigo-500/5 hover:text-indigo-100",
   ].join(" ");
 }
 
@@ -26,7 +25,7 @@ function Sidebar({ isOpen = false, onClose }) {
         {onClose && (
           <button
             onClick={onClose}
-            className="lg:hidden rounded-xl border border-white/10 px-2 py-1 text-sm text-zinc-200 hover:bg-white/10"
+            className="lg:hidden rounded-xl border border-white/10 px-2 py-1 text-sm text-zinc-200 transition hover:border-indigo-400/35 hover:bg-indigo-500/10"
             aria-label="Close menu"
           >
             ✕
@@ -50,19 +49,9 @@ function Sidebar({ isOpen = false, onClose }) {
           Library
         </NavLink>
 
-        <button
-          type="button"
-          className="block w-full rounded-2xl px-4 py-3 text-left text-sm text-zinc-300 transition hover:bg-white/5"
-        >
-          Recordings
-        </button>
-
-        <button
-          type="button"
-          className="block w-full rounded-2xl px-4 py-3 text-left text-sm text-zinc-300 transition hover:bg-white/5"
-        >
-          Notes
-        </button>
+        <NavLink to="/share" className={navClass}>
+          Share
+        </NavLink>
       </nav>
     </aside>
   );

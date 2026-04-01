@@ -54,7 +54,7 @@ function HeaderBar({
               placeholder="Search tracks, notes, or types..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-zinc-900/70 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
+              className="w-full rounded-2xl border border-white/10 bg-zinc-900/70 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-400/35"
             />
           </div>
         </div>
@@ -65,14 +65,14 @@ function HeaderBar({
             placeholder="Track title..."
             value={trackForm.title}
             onChange={(e) => updateField("title", e.target.value)}
-            className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
+            className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-400/35"
           />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <select
               value={trackForm.type}
               onChange={(e) => updateField("type", e.target.value)}
-              className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
+              className="rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-400/35"
             >
               <option>Song</option>
               <option>Guitar Riff</option>
@@ -85,14 +85,14 @@ function HeaderBar({
               <button
                 type="button"
                 onClick={() => audioInputRef.current?.click()}
-                className="flex-1 rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-cyan-400/40 hover:bg-cyan-500/10"
+                className="flex-1 rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-indigo-400/35 hover:bg-indigo-500/10"
               >
                 Audio
               </button>
               <button
                 type="button"
                 onClick={() => setIsCoverPickerOpen(true)}
-                className="flex-1 rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-cyan-400/40 hover:bg-cyan-500/10"
+                className="flex-1 rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-indigo-400/35 hover:bg-indigo-500/10"
               >
                 Cover
               </button>
@@ -107,7 +107,7 @@ function HeaderBar({
                 </span>
               )}
               {trackForm.coverArt && (
-                <span className="rounded-full border border-cyan-400/40 bg-cyan-500/20 px-3 py-1 text-xs text-cyan-300">
+                <span className="rounded-full border border-indigo-400/35 bg-indigo-500/20 px-3 py-1 text-xs text-indigo-300">
                   Cover uploaded
                 </span>
               )}
@@ -140,7 +140,7 @@ function HeaderBar({
               placeholder="Add notes about chords, lyrics, arrangement, tone, BPM, or reminders..."
               value={trackForm.notes}
               onChange={(e) => updateField("notes", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
+              className="w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-400/35"
             />
           </div>
 

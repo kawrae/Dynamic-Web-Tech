@@ -258,7 +258,12 @@ function TrackModal({
                 <button
                   type="button"
                   onClick={() => onToggleFavourite(track.id)}
-                  className="rounded-2xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                  className={
+                    "rounded-2xl border px-4 py-2 text-sm transition " +
+                    (track.favourite
+                      ? "border-indigo-400/35 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/15"
+                      : "border-white/10 text-zinc-200 hover:border-indigo-400/30 hover:bg-indigo-500/10")
+                  }
                 >
                   {track.favourite ? "★ Saved" : "☆ Save"}
                 </button>

@@ -36,7 +36,7 @@ function LandingCta() {
           >
             <Link
               to="/dashboard"
-              className="rounded-2xl bg-white px-6 py-4 text-center text-sm font-medium text-black transition hover:bg-zinc-200"
+              className="rounded-2xl bg-white px-6 py-4 text-center text-sm font-medium text-black transition hover:shadow-[0_0_0_1px_rgba(129,140,248,0.35)]"
             >
               Enter Dashboard
             </Link>

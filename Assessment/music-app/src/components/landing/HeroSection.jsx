@@ -44,7 +44,7 @@ function HeroSection() {
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
             <Link
               to="/dashboard"
-              className="rounded-2xl bg-white px-6 py-4 text-center text-sm font-medium text-black transition hover:bg-zinc-200"
+              className="rounded-2xl bg-white px-6 py-4 text-center text-sm font-medium text-black transition hover:shadow-[0_0_0_1px_rgba(129,140,248,0.35)]"
             >
               Open Dashboard
             </Link>
@@ -53,7 +53,7 @@ function HeroSection() {
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
             <a
               href="#features"
-              className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-center text-sm font-medium text-zinc-100 transition hover:bg-white/10"
+              className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-center text-sm font-medium text-zinc-100 transition hover:border-indigo-400/35 hover:bg-indigo-500/10"
             >
               Explore Features
             </a>
@@ -68,7 +68,7 @@ function HeroSection() {
             variants={fadeUp}
             whileHover={{ y: -6 }}
             transition={{ duration: 0.2 }}
-            className="rounded-3xl border border-white/10 bg-white/[0.03] p-5"
+            className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/[0.06]"
           >
             <p className="text-2xl font-semibold text-white">CRUD</p>
             <p className="mt-2 text-sm text-zinc-400">
@@ -80,7 +80,7 @@ function HeroSection() {
             variants={fadeUp}
             whileHover={{ y: -6 }}
             transition={{ duration: 0.2 }}
-            className="rounded-3xl border border-white/10 bg-white/[0.03] p-5"
+            className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/[0.06]"
           >
             <p className="text-2xl font-semibold text-white">Dexie</p>
             <p className="mt-2 text-sm text-zinc-400">
@@ -92,7 +92,7 @@ function HeroSection() {
             variants={fadeUp}
             whileHover={{ y: -6 }}
             transition={{ duration: 0.2 }}
-            className="rounded-3xl border border-white/10 bg-white/[0.03] p-5"
+            className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/[0.06]"
           >
             <p className="text-2xl font-semibold text-white">Media</p>
             <p className="mt-2 text-sm text-zinc-400">

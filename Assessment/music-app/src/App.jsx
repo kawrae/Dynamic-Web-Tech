@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import LibraryPage from "./pages/LibraryPage";
+import SharePage from "./pages/SharePage";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/library" element={<LibraryPage />} />
+          <Route path="/share" element={<SharePage />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
