@@ -8,7 +8,7 @@ function StoragePanel({ tracks }) {
   const withAudioCount =
     mediaItems?.filter((media) => Boolean(media.audioSrc)).length || 0;
   const storageProgress =
-    totalTracks === 0 ? "0%" : `${Math.min(totalTracks * 10, 100)}%`;
+    totalTracks === 0 ? "0%" : `${Math.min((totalTracks / 50) * 100, 100)}%`;
 
   return (
     <div className="rounded-3xl border border-white/10 bg-zinc-900/50 p-6">
