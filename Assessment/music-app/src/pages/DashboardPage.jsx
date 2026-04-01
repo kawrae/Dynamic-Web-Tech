@@ -4,6 +4,7 @@ import { ArrowLeft, Menu } from "lucide-react";
 import { nanoid } from "nanoid";
 import usePersistedState from "../hooks/usePersistedState";
 import { saveMedia, updateMedia, getMediaById, deleteMedia } from "../db";
+import { cropImageDataUrlToSquare, cropImageFileToSquare, readFileAsDataUrl } from "../lib/image";
 import Sidebar from "../components/Sidebar";
 import HeaderBar from "../components/HeaderBar";
 import IdeasPanel from "../components/IdeasPanel";
@@ -53,9 +54,10 @@ function DashboardPage() {
     notifyUser("Audio ready", "Voice recording is attached and ready to add to your track.");
   }
 
-  function handleCoverReady(coverUrl) {
-    updateTrackForm("coverArt", coverUrl);
-    notifyUser("Cover ready", "Cover photo is attached and ready to add to your track.");
+  async function handleCoverReady(coverUrl) {
+    const squareCover = await cropImageDataUrlToSquare(coverUrl);
+    updateTrackForm("coverArt", squareCover);
+    notifyUser("Cover ready", "Cover photo is attached as a square image and ready to add to your track.");
   }
 
   function handleClearTracks() {
@@ -105,28 +107,19 @@ function DashboardPage() {
     }
   };
 
-  function readFileAsDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-
-      reader.readAsDataURL(file);
-    });
-  }
-
   async function handleCoverArtUpload(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
     try {
-      const result = await readFileAsDataUrl(file);
+      const result = await cropImageFileToSquare(file);
       updateTrackForm("coverArt", result);
-      notifyUser("Cover attached", "The selected cover image is ready to add to your track.");
+      notifyUser("Cover attached", "The selected cover image was cropped to a square and is ready.");
     } catch (error) {
       console.error("Failed to read cover image:", error);
     }
+
+    event.target.value = "";
   }
 
   async function handleAudioUpload(event) {

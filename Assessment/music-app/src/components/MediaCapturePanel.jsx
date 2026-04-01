@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { cropImageFileToSquare, readFileAsDataUrl } from "../lib/image";
 
 function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -10,14 +11,6 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
 
   const audioChunksRef = useRef([]);
   const devicePhotoInputRef = useRef(null);
-
-  const readFileAsDataUrl = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
 
   const vibrate = (pattern = 200) => {
     if ('vibrate' in navigator) {
@@ -114,7 +107,7 @@ function MediaCapturePanel({ onRecordingReady, onCoverReady, onNotify }) {
     if (!file) return;
 
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const dataUrl = await cropImageFileToSquare(file);
       setPhotoDataUrl(dataUrl);
       vibrate();
       onCoverReady?.(dataUrl);

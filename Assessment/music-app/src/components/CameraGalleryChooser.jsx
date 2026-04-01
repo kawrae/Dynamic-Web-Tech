@@ -1,23 +1,16 @@
 import { useRef } from "react";
 import { X } from "lucide-react";
+import { cropImageFileToSquare } from "../lib/image";
 
 function CameraGalleryChooser({ onClose, onCameraCapture, galleryInputRef }) {
   const deviceInputRef = useRef(null);
-
-  const readFileAsDataUrl = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
 
   const handleFileChange = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const dataUrl = await cropImageFileToSquare(file);
       onCameraCapture(dataUrl);
     } catch (error) {
       console.error("Failed to read selected image:", error);

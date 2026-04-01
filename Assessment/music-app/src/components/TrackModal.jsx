@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { X, Trash2, Pencil } from "lucide-react";
 import { useMediaById } from "../db";
+import { cropImageFileToSquare, readFileAsDataUrl } from "../lib/image";
 import AudioPlayer from "./AudioPlayer";
 
 function TrackModal({
@@ -66,28 +67,32 @@ function TrackModal({
     setDraft((prev) => ({ ...prev, [field]: value }));
   }
 
-  function readFileAsDataURL(file, onLoad) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = typeof reader.result === "string" ? reader.result : "";
-      onLoad(result);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleCoverUpload(event) {
+  async function handleCoverUpload(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    readFileAsDataURL(file, (dataUrl) => updateDraft("coverArt", dataUrl));
+    try {
+      const dataUrl = await cropImageFileToSquare(file);
+      updateDraft("coverArt", dataUrl);
+    } catch (error) {
+      console.error("Failed to read cover image:", error);
+    }
+
     event.target.value = "";
   }
 
-  function handleAudioUpload(event) {
+  async function handleAudioUpload(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    readFileAsDataURL(file, (dataUrl) => updateDraft("audioUrl", dataUrl));
+    try {
+      const dataUrl = await readFileAsDataUrl(file);
+      const resolved = typeof dataUrl === "string" ? dataUrl : "";
+      updateDraft("audioUrl", resolved);
+    } catch (error) {
+      console.error("Failed to read audio file:", error);
+    }
+
     event.target.value = "";
   }
 
@@ -218,11 +223,13 @@ function TrackModal({
           )}
 
           {resolvedMedia.coverArt && (
-            <img
-              src={resolvedMedia.coverArt}
-              alt={track.title}
-              className="w-full rounded-2xl object-cover"
-            />
+            <div className="aspect-square w-full overflow-hidden rounded-2xl bg-zinc-950">
+              <img
+                src={resolvedMedia.coverArt}
+                alt={track.title}
+                className="h-full w-full object-cover"
+              />
+            </div>
           )}
 
           <div className="flex flex-wrap gap-3 border-t border-white/10 pt-4">
