@@ -144,9 +144,6 @@ function LibraryPage() {
                 <h2 className="text-3xl font-semibold tracking-tight">
                   Your collection
                 </h2>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Browse every saved track, cover, and audio preview in one place.
-                </p>
               </div>
 
               <div className="w-full max-w-md">

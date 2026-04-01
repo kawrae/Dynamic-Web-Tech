@@ -51,13 +51,13 @@ function DashboardPage() {
 
   function handleRecordingReady(audioUrl) {
     updateTrackForm("audioUrl", audioUrl);
-    notifyUser("Audio ready", "Voice recording is attached and ready to add to your track.");
+    notifyUser("Audio ready", "Voice recording is attached.");
   }
 
   async function handleCoverReady(coverUrl) {
     const squareCover = await cropImageDataUrlToSquare(coverUrl);
     updateTrackForm("coverArt", squareCover);
-    notifyUser("Cover ready", "Cover photo is attached as a square image and ready to add to your track.");
+    notifyUser("Cover ready", "Cover photo is attached.");
   }
 
   function handleClearTracks() {
@@ -114,7 +114,7 @@ function DashboardPage() {
     try {
       const result = await cropImageFileToSquare(file);
       updateTrackForm("coverArt", result);
-      notifyUser("Cover attached", "The selected cover image was cropped to a square and is ready.");
+      notifyUser("Cover attached.");
     } catch (error) {
       console.error("Failed to read cover image:", error);
     }

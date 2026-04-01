@@ -251,9 +251,6 @@ function SharePage() {
                 <h2 className="text-3xl font-semibold tracking-tight">
                   Share your tracks
                 </h2>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Pick a track, preview the share content, then use native share or quick share links.
-                </p>
               </div>
 
               <div className="w-full max-w-md">
