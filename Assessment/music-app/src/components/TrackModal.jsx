@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { X, Trash2, Pencil } from "lucide-react";
-import { useMediaById, deleteMedia } from "../db";
+import { useMediaById } from "../db";
 import AudioPlayer from "./AudioPlayer";
 
 function TrackModal({
@@ -59,11 +59,7 @@ function TrackModal({
   if (!track) return null;
 
   async function handleDelete() {
-    const confirmed = window.confirm(`Delete "${track.title}"?`);
-    if (!confirmed) return;
-
-    await deleteMedia(track.id);
-    onDeleteTrack(track.id);
+    await onDeleteTrack(track.id);
   }
 
   function updateDraft(field, value) {

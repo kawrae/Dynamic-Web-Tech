@@ -260,6 +260,14 @@ function DashboardPage() {
   }
 
   async function deleteTrack(trackId) {
+    const trackToDelete = tracks.find((track) => track.id === trackId);
+    const trackTitle = trackToDelete?.title?.trim() || "this track";
+    const confirmed = window.confirm(`Delete "${trackTitle}"?`);
+
+    if (!confirmed) {
+      return;
+    }
+
     setTracks((prev) => prev.filter((track) => track.id !== trackId));
 
     try {
@@ -345,7 +353,7 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl">
+      <div className="flex min-h-screen w-full">
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
         {isSidebarOpen && (
@@ -355,7 +363,7 @@ function DashboardPage() {
           />
         )}
 
-        <main className="flex-1">
+        <main className="min-w-0 flex-1">
           <div className="flex items-center justify-between border-b border-white/10 bg-zinc-950/60 px-4 py-3 backdrop-blur-sm lg:hidden">
             <Link
               to="/landing"

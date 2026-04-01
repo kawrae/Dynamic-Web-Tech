@@ -5,7 +5,7 @@ import usePersistedState from "../hooks/usePersistedState";
 import Sidebar from "../components/Sidebar";
 import LibraryGrid from "../components/LibraryGrid";
 import TrackModal from "../components/TrackModal";
-import { updateMedia } from "../db";
+import { deleteMedia, updateMedia } from "../db";
 
 function LibraryPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -51,9 +51,23 @@ function LibraryPage() {
     );
   }
 
-  function deleteTrack(trackId) {
+  async function deleteTrack(trackId) {
+    const trackToDelete = tracks.find((track) => track.id === trackId);
+    const trackTitle = trackToDelete?.title?.trim() || "this track";
+    const confirmed = window.confirm(`Delete "${trackTitle}"?`);
+
+    if (!confirmed) {
+      return;
+    }
+
     setTracks((prev) => prev.filter((track) => track.id !== trackId));
     setSelectedTrack((prev) => (prev?.id === trackId ? null : prev));
+
+    try {
+      await deleteMedia(trackId);
+    } catch (error) {
+      console.error("Failed to delete track media:", error);
+    }
   }
 
   async function updateTrack(trackId, updates) {
