@@ -79,12 +79,3 @@ export async function deleteMedia(id) {
     throw error;
   }
 }
-
-export async function clearAllMedia() {
-  try {
-    await db.media.clear();
-  } catch (error) {
-    console.error("Failed to clear media table:", error);
-    throw error;
-  }
-}
