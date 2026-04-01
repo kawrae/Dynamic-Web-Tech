@@ -48,10 +48,6 @@ function Sidebar({ isOpen = false, onClose }) {
         <NavLink to="/library" className={navClass}>
           Library
         </NavLink>
-
-        <NavLink to="/share" className={navClass}>
-          Share
-        </NavLink>
       </nav>
     </aside>
   );

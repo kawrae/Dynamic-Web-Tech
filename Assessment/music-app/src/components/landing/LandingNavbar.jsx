@@ -13,16 +13,16 @@ function LandingNavbar() {
 
         <nav className="hidden items-center gap-6 md:flex">
           <a
-            href="#features"
-            className="text-sm text-zinc-300 transition hover:text-indigo-200"
-          >
-            Features
-          </a>
-          <a
             href="#developer"
             className="text-sm text-zinc-300 transition hover:text-indigo-200"
           >
             Developer
+          </a>
+          <a
+            href="#features"
+            className="text-sm text-zinc-300 transition hover:text-indigo-200"
+          >
+            Features
           </a>
           <Link
             to="/dashboard"
